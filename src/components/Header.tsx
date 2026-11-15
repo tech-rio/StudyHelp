@@ -53,23 +53,23 @@ export const Header: FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 px-4 lg:px-8 py-3 transition-colors">
+    <header className="sticky top-0 z-40 bg-[#faf7f0]/95 backdrop-blur-md border-b border-[#ded8cb] px-4 lg:px-8 py-3 transition-colors">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Title */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center font-bold text-sm tracking-tight shadow-xs">
+          <div className="w-8 h-8 rounded-lg bg-[#26221f] text-[#faf7f0] flex items-center justify-center font-bold text-sm tracking-tight shadow-xs">
             C
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-stone-900 tracking-tight leading-none m-0">
+              <h1 className="text-base font-bold text-[#26221f] tracking-tight leading-none m-0">
                 CogniStudy
               </h1>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 border border-stone-200">
-                Study Partner
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#eae4d7] text-[#5c534a] border border-[#ded8cb]">
+                Study Companion
               </span>
             </div>
-            <p className="text-xs text-stone-500 hidden sm:block mt-0.5 font-normal">
+            <p className="text-xs text-[#7d7368] hidden sm:block mt-0.5 font-normal">
               Active recall & practice questions from your course notes
             </p>
           </div>
@@ -79,28 +79,28 @@ export const Header: FC<HeaderProps> = ({
         <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Deck Switcher Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
-              <BookOpen className="w-3.5 h-3.5 text-stone-600" />
+            <button className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg border border-[#ded8cb] bg-[#faf7f0] hover:bg-[#f0ebe0] text-[#26221f] transition">
+              <BookOpen className="w-3.5 h-3.5 text-[#5c534a]" />
               <span className="truncate max-w-[150px]">{currentDeck.title}</span>
-              <ChevronDown className="w-3 h-3 text-stone-400" />
+              <ChevronDown className="w-3 h-3 text-[#7d7368]" />
             </button>
-            <div className="absolute right-0 mt-1 w-64 bg-white border border-stone-200 rounded-xl shadow-lg p-1.5 hidden group-hover:block z-50 animate-in fade-in duration-150">
-              <div className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider px-2 py-1">
+            <div className="absolute right-0 mt-1 w-64 bg-[#faf7f0] border border-[#ded8cb] rounded-xl shadow-md p-1.5 hidden group-hover:block z-50 animate-in fade-in duration-150">
+              <div className="text-[10px] font-semibold text-[#8a8074] uppercase tracking-wider px-2 py-1">
                 Sample Course Topics
               </div>
               <button
                 onClick={() => onSelectDeck(DEEP_LEARNING_DECK)}
-                className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-stone-100 text-stone-800 transition flex items-center justify-between"
+                className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-[#eae4d7] text-[#26221f] transition flex items-center justify-between"
               >
                 <span>Deep Learning & Backprop</span>
-                {currentDeck.title.includes("Deep Learning") && <Check className="w-3.5 h-3.5 text-stone-800" />}
+                {currentDeck.title.includes("Deep Learning") && <Check className="w-3.5 h-3.5 text-[#26221f]" />}
               </button>
               <button
                 onClick={() => onSelectDeck(OPERATING_SYSTEMS_DECK)}
-                className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-stone-100 text-stone-800 transition flex items-center justify-between"
+                className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-[#eae4d7] text-[#26221f] transition flex items-center justify-between"
               >
                 <span>OS Concurrency & Deadlocks</span>
-                {currentDeck.title.includes("Operating Systems") && <Check className="w-3.5 h-3.5 text-stone-800" />}
+                {currentDeck.title.includes("Operating Systems") && <Check className="w-3.5 h-3.5 text-[#26221f]" />}
               </button>
             </div>
           </div>
@@ -109,9 +109,9 @@ export const Header: FC<HeaderProps> = ({
           <button
             onClick={handleExportMarkdown}
             title="Download notes in Markdown format"
-            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition"
+            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-[#ded8cb] bg-[#faf7f0] hover:bg-[#f0ebe0] text-[#26221f] transition"
           >
-            <Download className="w-3.5 h-3.5 text-stone-500" />
+            <Download className="w-3.5 h-3.5 text-[#5c534a]" />
             <span className="hidden sm:inline">Export Notes</span>
           </button>
 
@@ -120,12 +120,12 @@ export const Header: FC<HeaderProps> = ({
             onClick={onOpenKeyModal}
             className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition ${
               hasKey
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-                : 'bg-stone-100 text-stone-700 border-stone-200 hover:bg-stone-200'
+                ? 'bg-[#e2edd8] text-[#2d4d1e] border-[#c4dcaf] hover:bg-[#d8e6cc]'
+                : 'bg-[#eae4d7] text-[#5c534a] border-[#ded8cb] hover:bg-[#dfd8ca]'
             }`}
           >
             <Key className="w-3.5 h-3.5" />
-            <span>{hasKey ? 'Gemini Connected' : 'Offline Mode'}</span>
+            <span>{hasKey ? 'Gemini Active' : 'Offline Mode'}</span>
           </button>
         </div>
       </div>

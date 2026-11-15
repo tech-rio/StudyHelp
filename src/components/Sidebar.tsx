@@ -72,9 +72,9 @@ export const Sidebar: FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-full md:w-64 bg-stone-50/50 border-r border-stone-200/80 p-3.5 flex flex-col justify-between shrink-0">
+    <aside className="w-full md:w-64 bg-[#f0ebe0]/70 border-r border-[#ded8cb] p-3.5 flex flex-col justify-between shrink-0">
       <div className="space-y-1">
-        <div className="px-3 py-2 text-[11px] font-semibold text-stone-400 uppercase tracking-wider">
+        <div className="px-3 py-2 text-[11px] font-semibold text-[#8a8074] uppercase tracking-wider">
           Study Tools
         </div>
 
@@ -87,20 +87,20 @@ export const Sidebar: FC<SidebarProps> = ({
               onClick={() => onTabChange(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs transition-all duration-150 ${
                 isActive
-                  ? 'bg-stone-900 text-white font-medium shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/60 font-normal'
+                  ? 'bg-[#26221f] text-[#faf7f0] font-medium shadow-xs'
+                  : 'text-[#5c534a] hover:text-[#26221f] hover:bg-[#e6dfd1] font-normal'
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-stone-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-[#faf7f0]' : 'text-[#8a8074]'}`} />
                 <span>{item.label}</span>
               </div>
               {item.badge && (
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
                     isActive
-                      ? 'bg-white/20 text-white'
-                      : 'bg-stone-200/80 text-stone-600'
+                      ? 'bg-white/20 text-[#faf7f0]'
+                      : 'bg-[#ded8cb] text-[#474039]'
                   }`}
                 >
                   {item.badge}
@@ -112,12 +112,12 @@ export const Sidebar: FC<SidebarProps> = ({
       </div>
 
       {/* Course Demo Note */}
-      <div className="mt-6 p-3.5 bg-white border border-stone-200 rounded-xl text-xs space-y-1 shadow-xs">
-        <div className="flex items-center gap-1.5 font-semibold text-stone-900">
-          <Compass className="w-3.5 h-3.5 text-stone-600" />
+      <div className="mt-6 p-3.5 bg-[#faf7f0] border border-[#ded8cb] rounded-xl text-xs space-y-1 shadow-xs">
+        <div className="flex items-center gap-1.5 font-semibold text-[#26221f]">
+          <Compass className="w-3.5 h-3.5 text-[#5c534a]" />
           <span>Evaluation Demo</span>
         </div>
-        <p className="text-[11px] text-stone-500 leading-normal">
+        <p className="text-[11px] text-[#7d7368] leading-normal">
           5–7 min presentation mode with live demo and talking points.
         </p>
       </div>

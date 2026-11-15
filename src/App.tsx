@@ -33,7 +33,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f2eee5] text-[#26221f] flex flex-col font-sans">
       {/* Top Application Header */}
       <Header
         currentDeck={currentDeck}
@@ -42,8 +42,8 @@ export function App() {
         onOpenKeyModal={() => setIsKeyModalOpen(true)}
       />
 
-      {/* Main Body Layout */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row border-x border-stone-200/80 bg-white shadow-xs">
+      {/* Main Body Layout with warm parchment borders */}
+      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row border-x border-[#ded8cb] bg-[#f7f4ec] shadow-xs">
         {/* Navigation Sidebar */}
         <Sidebar
           activeTab={activeTab}
@@ -53,7 +53,7 @@ export function App() {
         />
 
         {/* Dynamic Content Viewport */}
-        <main className="flex-1 p-5 sm:p-8 overflow-x-hidden bg-stone-50/60">
+        <main className="flex-1 p-5 sm:p-8 overflow-x-hidden bg-[#f4f0e6]">
           {activeTab === 'workspace' && (
             <InputWorkspace
               onStudyPackageGenerated={handleStudyPackageGenerated}

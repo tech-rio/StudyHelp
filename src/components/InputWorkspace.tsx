@@ -67,29 +67,29 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Intro Header */}
-      <div className="border-b border-stone-200 pb-5">
-        <h2 className="text-2xl font-bold tracking-tight text-stone-900 m-0">
+      <div className="border-b border-[#ded8cb] pb-5">
+        <h2 className="text-2xl font-bold tracking-tight text-[#26221f] m-0">
           Add Study Material
         </h2>
-        <p className="text-sm text-stone-600 mt-1.5 leading-relaxed">
-          Upload a lecture slide PDF, textbook excerpt, or paste syllabus notes below. The app breaks down dense text into key concepts, interactive flashcards, practice exam questions, and a concept map.
+        <p className="text-sm text-[#5c534a] mt-1.5 leading-relaxed">
+          Upload a lecture slide PDF, textbook excerpt, or paste syllabus notes below. CogniStudy breaks down dense text into key concepts, interactive flashcards, practice exam questions, and a concept map.
         </p>
 
         {/* 1-Click Samples */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-stone-500 flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-stone-600" />
+          <span className="text-xs font-medium text-[#7d7368] flex items-center gap-1.5">
+            <BookOpen className="w-3.5 h-3.5 text-[#5c534a]" />
             Or try a sample topic:
           </span>
           <button
             onClick={() => onSelectSampleDeck(DEEP_LEARNING_DECK)}
-            className="px-3 py-1 rounded-md text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition"
+            className="px-3 py-1 rounded-md text-xs font-medium bg-[#eae4d7] hover:bg-[#dfd8ca] text-[#26221f] border border-[#ded8cb] transition"
           >
             Deep Learning & Neural Networks
           </button>
           <button
             onClick={() => onSelectSampleDeck(OPERATING_SYSTEMS_DECK)}
-            className="px-3 py-1 rounded-md text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition"
+            className="px-3 py-1 rounded-md text-xs font-medium bg-[#eae4d7] hover:bg-[#dfd8ca] text-[#26221f] border border-[#ded8cb] transition"
           >
             OS Concurrency & Deadlocks
           </button>
@@ -97,11 +97,11 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
       </div>
 
       {/* Main Workspace Card */}
-      <div className="bg-white border border-stone-200 rounded-xl p-6 shadow-xs space-y-5">
+      <div className="bg-[#faf7f0] border border-[#ded8cb] rounded-xl p-6 shadow-xs space-y-5">
         {/* Upload dropzone */}
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="border border-dashed border-stone-300 hover:border-stone-400 bg-stone-50/50 hover:bg-stone-50 rounded-lg p-6 text-center cursor-pointer transition duration-150 group"
+          className="border border-dashed border-[#cfc6b6] hover:border-[#a89e8d] bg-[#f4f0e6]/70 hover:bg-[#eae4d7]/70 rounded-lg p-6 text-center cursor-pointer transition duration-150 group"
         >
           <input
             type="file"
@@ -110,22 +110,22 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
             accept=".pdf,.txt,.md,.json"
             className="hidden"
           />
-          <div className="w-10 h-10 mx-auto rounded-full bg-stone-200/70 flex items-center justify-center text-stone-700 mb-2.5 group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 mx-auto rounded-full bg-[#eae4d7] flex items-center justify-center text-[#26221f] mb-2.5 group-hover:scale-105 transition-transform">
             <UploadCloud className="w-5 h-5" />
           </div>
-          <p className="text-xs font-semibold text-stone-800">
+          <p className="text-xs font-semibold text-[#26221f]">
             Click to upload PDF, TXT, or Markdown notes
           </p>
-          <p className="text-[11px] text-stone-500 mt-0.5">
+          <p className="text-[11px] text-[#7d7368] mt-0.5">
             Text is parsed securely directly in your browser
           </p>
         </div>
 
         {/* Text Area */}
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-stone-500">
-            <span className="font-medium text-stone-700 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-stone-500" />
+          <div className="flex items-center justify-between text-xs text-[#7d7368]">
+            <span className="font-medium text-[#474039] flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-[#5c534a]" />
               Paste Raw Notes or Lecture Transcript
             </span>
             <span className="font-mono text-[11px]">{wordCount} words</span>
@@ -136,13 +136,13 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Paste your course notes, slides text, definitions, or textbook reading here..."
             rows={8}
-            className="w-full p-3.5 rounded-lg border border-stone-200 bg-white text-stone-900 text-sm focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none resize-none transition font-sans leading-relaxed"
+            className="w-full p-3.5 rounded-lg border border-[#ded8cb] bg-[#fbf9f5] text-[#26221f] text-sm focus:border-[#26221f] focus:ring-1 focus:ring-[#26221f] focus:outline-none resize-none transition font-sans leading-relaxed"
           />
         </div>
 
         {errorMsg && (
-          <div className="p-3 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+          <div className="p-3 rounded-lg bg-[#fce8e6] text-[#6b1e1b] border border-[#f3beba] text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-[#a82a25]" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -152,11 +152,11 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
           <button
             onClick={handleGenerate}
             disabled={isProcessing || !inputText.trim()}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-stone-900 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-xs transition active:scale-98"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#26221f] hover:bg-[#3d3732] disabled:opacity-40 disabled:cursor-not-allowed text-[#faf7f0] text-xs font-semibold shadow-xs transition active:scale-98"
           >
             {isProcessing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-stone-300" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#ded8cb]" />
                 <span>Analyzing Notes...</span>
               </>
             ) : (

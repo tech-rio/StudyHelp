@@ -45,7 +45,7 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
 
   if (!cards || cards.length === 0) {
     return (
-      <div className="text-center py-12 text-stone-500 text-sm">
+      <div className="text-center py-12 text-[#7d7368] text-sm">
         No flashcards generated yet. Add notes to create a deck.
       </div>
     );
@@ -84,14 +84,14 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
       {/* Top Header & Progress */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-stone-900 tracking-tight flex items-center gap-2">
+          <h2 className="text-lg font-bold text-[#26221f] tracking-tight flex items-center gap-2">
             Active Recall Flashcards
-            <span className="text-xs px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-mono font-medium">
+            <span className="text-xs px-2 py-0.5 rounded bg-[#eae4d7] text-[#26221f] font-mono font-medium border border-[#ded8cb]">
               {currentIndex + 1} of {cards.length}
             </span>
           </h2>
-          <p className="text-xs text-stone-500 mt-0.5">
-            Press <kbd className="px-1.5 py-0.5 rounded bg-stone-200 text-stone-700 font-mono text-[10px]">Space</kbd> or click to flip
+          <p className="text-xs text-[#7d7368] mt-0.5">
+            Press <kbd className="px-1.5 py-0.5 rounded bg-[#eae4d7] text-[#474039] font-mono text-[10px] border border-[#ded8cb]">Space</kbd> or click to flip
           </p>
         </div>
 
@@ -99,14 +99,14 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
           <button
             onClick={handleShuffle}
             title="Shuffle cards"
-            className="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 transition"
+            className="p-1.5 rounded-lg border border-[#ded8cb] bg-[#faf7f0] hover:bg-[#eae4d7] text-[#474039] transition"
           >
             <Shuffle className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleReset}
             title="Reset progress"
-            className="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 transition"
+            className="p-1.5 rounded-lg border border-[#ded8cb] bg-[#faf7f0] hover:bg-[#eae4d7] text-[#474039] transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -114,20 +114,20 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
       </div>
 
       {/* Progress tracker bar */}
-      <div className="w-full bg-stone-200 h-1.5 rounded-full overflow-hidden flex">
+      <div className="w-full bg-[#ded8cb] h-1.5 rounded-full overflow-hidden flex">
         <div
           style={{ width: `${(masteredCount / cards.length) * 100}%` }}
-          className="bg-emerald-600 transition-all duration-300"
+          className="bg-[#3e5f29] transition-all duration-300"
           title={`Mastered: ${masteredCount}`}
         />
         <div
           style={{ width: `${(reviewingCount / cards.length) * 100}%` }}
-          className="bg-amber-500 transition-all duration-300"
+          className="bg-[#b37424] transition-all duration-300"
           title={`Reviewing: ${reviewingCount}`}
         />
         <div
           style={{ width: `${(learningCount / cards.length) * 100}%` }}
-          className="bg-stone-400 transition-all duration-300"
+          className="bg-[#9e9485] transition-all duration-300"
           title={`Learning: ${learningCount}`}
         />
       </div>
@@ -143,42 +143,42 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
           }`}
         >
           {/* FRONT */}
-          <div className="absolute inset-0 backface-hidden bg-white border border-stone-200 rounded-xl p-7 flex flex-col justify-between shadow-xs hover:border-stone-400 transition-colors">
-            <div className="flex items-center justify-between text-xs text-stone-500">
+          <div className="absolute inset-0 backface-hidden bg-[#faf7f0] border border-[#ded8cb] rounded-xl p-7 flex flex-col justify-between shadow-xs hover:border-[#b8ad9b] transition-colors">
+            <div className="flex items-center justify-between text-xs text-[#7d7368]">
               <span className="font-medium tracking-wide uppercase text-[10px]">Question</span>
-              <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-600 text-[11px]">
+              <span className="px-2 py-0.5 rounded bg-[#eae4d7] text-[#474039] text-[11px] border border-[#ded8cb]">
                 {currentCard.category}
               </span>
             </div>
 
             <div className="my-auto text-center px-4">
-              <p className="text-lg font-semibold text-stone-900 leading-snug">
+              <p className="text-lg font-semibold text-[#26221f] leading-snug">
                 {currentCard.front}
               </p>
             </div>
 
-            <div className="flex items-center justify-center gap-1.5 text-xs text-stone-400 font-medium">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#8a8074] font-medium">
               <RotateCw className="w-3.5 h-3.5" />
               <span>Click to reveal answer</span>
             </div>
           </div>
 
           {/* BACK */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-stone-900 border border-stone-800 rounded-xl p-7 text-white flex flex-col justify-between shadow-md">
-            <div className="flex items-center justify-between text-xs text-stone-400">
-              <span className="font-medium tracking-wide uppercase text-[10px] text-emerald-400">Answer</span>
-              <span className="px-2 py-0.5 rounded bg-stone-800 text-stone-300 text-[11px]">
+          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-[#26221f] border border-[#3d3732] rounded-xl p-7 text-[#faf7f0] flex flex-col justify-between shadow-md">
+            <div className="flex items-center justify-between text-xs text-[#b8ad9b]">
+              <span className="font-medium tracking-wide uppercase text-[10px] text-[#86efac]">Answer</span>
+              <span className="px-2 py-0.5 rounded bg-[#38332e] text-[#cfc6b6] text-[11px]">
                 {currentCard.category}
               </span>
             </div>
 
             <div className="my-auto overflow-y-auto max-h-40 px-2 text-left">
-              <p className="text-base text-stone-100 leading-relaxed font-normal whitespace-pre-line">
+              <p className="text-base text-[#faf7f0] leading-relaxed font-normal whitespace-pre-line">
                 {currentCard.back}
               </p>
             </div>
 
-            <div className="text-center text-[11px] text-stone-400 font-medium">
+            <div className="text-center text-[11px] text-[#b8ad9b] font-medium">
               Rate how well you knew this below
             </div>
           </div>
@@ -187,7 +187,7 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
 
       {/* Spaced Repetition Buttons */}
       <div className="space-y-2">
-        <div className="text-center text-[11px] font-medium text-stone-400 uppercase tracking-wider">
+        <div className="text-center text-[11px] font-medium text-[#7d7368] uppercase tracking-wider">
           Self Assessment
         </div>
         <div className="grid grid-cols-3 gap-2.5">
@@ -196,7 +196,7 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
               e.stopPropagation();
               handleRateMastery('learning');
             }}
-            className="py-2 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-medium transition active:scale-98"
+            className="py-2 px-3 rounded-lg border border-[#ded8cb] bg-[#faf7f0] hover:bg-[#eae4d7] text-[#474039] text-xs font-medium transition active:scale-98"
           >
             Hard (Review Soon)
           </button>
@@ -205,7 +205,7 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
               e.stopPropagation();
               handleRateMastery('reviewing');
             }}
-            className="py-2 px-3 rounded-lg border border-amber-200 bg-amber-50/50 hover:bg-amber-100 text-amber-900 text-xs font-medium transition active:scale-98"
+            className="py-2 px-3 rounded-lg border border-[#e3d1ba] bg-[#f2e6d6] hover:bg-[#ebd9c4] text-[#5c3e1e] text-xs font-medium transition active:scale-98"
           >
             Good (Understood)
           </button>
@@ -214,7 +214,7 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
               e.stopPropagation();
               handleRateMastery('mastered');
             }}
-            className="py-2 px-3 rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 text-emerald-900 text-xs font-medium transition active:scale-98"
+            className="py-2 px-3 rounded-lg border border-[#c4dcaf] bg-[#e6edd8] hover:bg-[#dbe6ca] text-[#2d4d1e] text-xs font-medium transition active:scale-98"
           >
             Easy (Mastered)
           </button>
@@ -225,19 +225,19 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
       <div className="flex items-center justify-between pt-1">
         <button
           onClick={handlePrev}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#ded8cb] bg-[#faf7f0] hover:bg-[#eae4d7] text-[#474039] transition"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           <span>Previous</span>
         </button>
 
-        <span className="text-xs text-stone-400 font-mono">
+        <span className="text-xs text-[#7d7368] font-mono">
           ← / → keys
         </span>
 
         <button
           onClick={handleNext}
-          className="flex items-center gap-1 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-stone-900 hover:bg-stone-800 text-white transition shadow-xs"
+          className="flex items-center gap-1 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#26221f] hover:bg-[#3d3732] text-[#faf7f0] transition shadow-xs"
         >
           <span>Next</span>
           <ChevronRight className="w-3.5 h-3.5" />
