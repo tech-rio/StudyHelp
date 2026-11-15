@@ -5,7 +5,8 @@ import {
   XCircle,
   RotateCcw,
   ArrowRight,
-  HelpCircle
+  HelpCircle,
+  Trophy
 } from 'lucide-react';
 import type { QuizQuestion } from '../types/study';
 
@@ -22,7 +23,7 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
 
   if (!questions || questions.length === 0) {
     return (
-      <div className="text-center py-12 text-[#7d7368] text-sm">
+      <div className="text-center py-12 text-stone-500 text-sm">
         No quiz questions available yet.
       </div>
     );
@@ -87,36 +88,40 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
 
   if (isCompleted) {
     return (
-      <div className="max-w-xl mx-auto bg-[#faf7f0] border border-[#ded8cb] rounded-xl p-8 text-center shadow-xs space-y-6">
+      <div className="max-w-xl mx-auto bg-white border border-stone-200/90 rounded-3xl p-8 sm:p-10 text-center shadow-xs space-y-6">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs">
+          <Trophy className="w-8 h-8" />
+        </div>
+
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#7d7368]">
-            Quiz Completed
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+            Quiz Assessment Completed
           </span>
-          <h2 className="text-2xl font-bold text-[#26221f] mt-1">
-            {scorePercent >= 80 ? 'Solid Understanding!' : scorePercent >= 60 ? 'Good Progress' : 'Review Recommended'}
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1.5">
+            {scorePercent >= 80 ? 'Mastery Level Achieved! 🎉' : scorePercent >= 60 ? 'Good Effort! Keep Reviewing' : 'Review Recommended'}
           </h2>
-          <p className="text-sm text-[#5c534a] mt-1">
-            You got {correctCount} out of {questions.length} questions correct ({scorePercent}%)
+          <p className="text-sm text-stone-600 mt-1">
+            You scored {correctCount} out of {questions.length} questions ({scorePercent}%)
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 py-2 text-left">
-          <div className="p-3.5 rounded-lg bg-[#f4f0e6] border border-[#ded8cb]">
-            <span className="text-xs text-[#7d7368]">Correct Answers</span>
-            <p className="text-xl font-bold text-[#26221f] mt-0.5">{correctCount} / {questions.length}</p>
+          <div className="p-4 rounded-2xl bg-[#f0faf4] border border-emerald-100">
+            <span className="text-xs text-stone-500 font-semibold">Correct Answers</span>
+            <p className="text-2xl font-extrabold text-emerald-800 mt-0.5">{correctCount} / {questions.length}</p>
           </div>
-          <div className="p-3.5 rounded-lg bg-[#f4f0e6] border border-[#ded8cb]">
-            <span className="text-xs text-[#7d7368]">Score</span>
-            <p className="text-xl font-bold text-[#26221f] mt-0.5">{scorePercent}%</p>
+          <div className="p-4 rounded-2xl bg-[#f0faf4] border border-emerald-100">
+            <span className="text-xs text-stone-500 font-semibold">Mastery Score</span>
+            <p className="text-2xl font-extrabold text-emerald-800 mt-0.5">{scorePercent}%</p>
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-3 pt-2">
           <button
             onClick={handleRetake}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#26221f] hover:bg-[#3d3732] text-[#faf7f0] font-medium text-xs shadow-xs transition"
+            className="flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-4 h-4" />
             <span>Retake Practice Quiz</span>
           </button>
         </div>
@@ -125,51 +130,51 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5">
+    <div className="max-w-2xl mx-auto space-y-6">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-xs font-semibold text-[#7d7368] uppercase tracking-wider">
-            Practice Assessment
+          <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
+            Adaptive Knowledge Check
           </span>
-          <h2 className="text-lg font-bold text-[#26221f]">
+          <h2 className="text-xl font-bold text-stone-900 mt-0.5">
             Question {currentIndex + 1} of {questions.length}
           </h2>
         </div>
-        <div className="text-xs font-mono px-2.5 py-1 rounded bg-[#eae4d7] text-[#26221f] border border-[#ded8cb]">
+        <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
           Score: {correctCount} / {Object.keys(selectedAnswers).length}
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-[#ded8cb] h-1.5 rounded-full overflow-hidden">
+      <div className="w-full bg-stone-200 h-2 rounded-full overflow-hidden shadow-inner">
         <div
           style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
-          className="bg-[#26221f] h-full transition-all duration-300"
+          className="bg-emerald-600 h-full transition-all duration-300"
         />
       </div>
 
       {/* Question Card */}
-      <div className="bg-[#faf7f0] border border-[#ded8cb] rounded-xl p-6 shadow-xs space-y-5">
-        <p className="text-base font-semibold text-[#26221f] leading-snug">
+      <div className="bg-white border border-stone-200/90 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
+        <p className="text-lg font-bold text-stone-900 leading-snug">
           {currentQ.question}
         </p>
 
         {/* Options */}
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {currentQ.options.map((option, optIdx) => {
             const isSelected = selectedOption === optIdx;
             const isCorrect = optIdx === currentQ.correctIndex;
 
-            let buttonStyle = "border-[#ded8cb] hover:border-[#b8ad9b] hover:bg-[#f0ebe0] text-[#26221f] bg-[#fbf9f5]";
+            let buttonStyle = "border-stone-200 hover:border-emerald-300 hover:bg-emerald-50/20 text-stone-800 bg-white";
 
             if (isAnswered) {
               if (isCorrect) {
-                buttonStyle = "border-[#7ecf7b] bg-[#e6edd8] text-[#1e3a12] font-medium";
+                buttonStyle = "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold shadow-xs";
               } else if (isSelected && !isCorrect) {
-                buttonStyle = "border-[#f3beba] bg-[#fce8e6] text-[#6b1e1b] font-medium";
+                buttonStyle = "border-rose-400 bg-rose-50 text-rose-950 font-bold";
               } else {
-                buttonStyle = "opacity-45 border-[#ded8cb] text-[#8a8074]";
+                buttonStyle = "opacity-40 border-stone-200 text-stone-400";
               }
             }
 
@@ -178,15 +183,15 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
                 key={optIdx}
                 onClick={() => handleSelectOption(optIdx)}
                 disabled={isAnswered}
-                className={`w-full text-left p-3.5 rounded-lg border transition-all duration-150 flex items-center justify-between text-xs sm:text-sm ${buttonStyle}`}
+                className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-150 flex items-center justify-between text-xs sm:text-sm ${buttonStyle}`}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`w-6 h-6 rounded flex items-center justify-center font-mono text-xs shrink-0 ${
+                  <span className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
                     isAnswered && isCorrect
-                      ? 'bg-[#3e5f29] text-[#faf7f0]'
+                      ? 'bg-emerald-600 text-white'
                       : isAnswered && isSelected
-                      ? 'bg-[#a82a25] text-[#faf7f0]'
-                      : 'bg-[#eae4d7] text-[#474039]'
+                      ? 'bg-rose-600 text-white'
+                      : 'bg-stone-100 text-stone-700'
                   }`}>
                     {String.fromCharCode(65 + optIdx)}
                   </span>
@@ -194,10 +199,10 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
                 </div>
 
                 {isAnswered && isCorrect && (
-                  <CheckCircle2 className="w-4 h-4 text-[#3e5f29] shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 )}
                 {isAnswered && isSelected && !isCorrect && (
-                  <XCircle className="w-4 h-4 text-[#a82a25] shrink-0" />
+                  <XCircle className="w-5 h-5 text-rose-600 shrink-0" />
                 )}
               </button>
             );
@@ -206,17 +211,17 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
 
         {/* Explanation Card */}
         {showExplanation && (
-          <div className="p-4 rounded-lg bg-[#f4f0e6] border border-[#ded8cb] text-xs text-[#3d3732] space-y-1.5 animate-in fade-in duration-200">
-            <div className="flex items-center gap-1.5 font-semibold text-[#26221f]">
-              <HelpCircle className="w-4 h-4 text-[#5c534a]" />
-              <span>Explanation</span>
+          <div className="p-4 rounded-2xl bg-[#f0faf4] border border-emerald-200/80 text-xs text-stone-800 space-y-2 animate-in fade-in duration-200">
+            <div className="flex items-center gap-1.5 font-bold text-emerald-900">
+              <HelpCircle className="w-4 h-4 text-emerald-700" />
+              <span>Explanation & Rationale</span>
             </div>
             <p className="leading-relaxed">
               {currentQ.explanation}
             </p>
             {currentQ.tip && (
-              <div className="pt-2 border-t border-[#ded8cb] text-[#5c534a] text-[11px]">
-                <strong className="text-[#26221f]">Exam Note:</strong> {currentQ.tip}
+              <div className="pt-2 border-t border-emerald-100 text-stone-600 text-[11px]">
+                <strong className="text-emerald-900">Exam Note:</strong> {currentQ.tip}
               </div>
             )}
           </div>
@@ -227,10 +232,10 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
           <div className="flex items-center justify-end pt-1">
             <button
               onClick={handleNext}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#26221f] hover:bg-[#3d3732] text-[#faf7f0] font-medium text-xs shadow-xs transition active:scale-98"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition active:scale-98"
             >
               <span>{currentIndex < questions.length - 1 ? 'Next Question' : 'View Results'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         )}

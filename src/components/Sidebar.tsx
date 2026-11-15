@@ -1,17 +1,18 @@
 import type { FC } from 'react';
 import {
-  FileText,
+  Home,
   BookOpen,
+  MessageCircle,
   Layers,
-  CheckCircle2,
+  Trophy,
   GitFork,
-  MessageSquare,
-  Presentation,
-  Compass
+  Folder,
+  Settings,
+  Sparkles
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 
-export type TabType = 'workspace' | 'summary' | 'flashcards' | 'quiz' | 'mindmap' | 'tutor' | 'presentation';
+export type TabType = 'dashboard' | 'workspace' | 'summary' | 'flashcards' | 'quiz' | 'mindmap' | 'tutor' | 'presentation';
 
 interface SidebarProps {
   activeTab: TabType;
@@ -23,103 +24,129 @@ interface SidebarProps {
 export const Sidebar: FC<SidebarProps> = ({
   activeTab,
   onTabChange,
-  deck,
-  quizScore
+  deck: _deck,
+  quizScore: _quizScore
 }) => {
   const navItems = [
     {
+      id: 'dashboard' as TabType,
+      label: 'Dashboard',
+      icon: Home
+    },
+    {
       id: 'workspace' as TabType,
-      label: 'Upload & Notes',
-      icon: FileText,
-      badge: null
-    },
-    {
-      id: 'summary' as TabType,
-      label: 'Summary & Key Ideas',
-      icon: BookOpen,
-      badge: `${deck.keyPoints.length}`
-    },
-    {
-      id: 'flashcards' as TabType,
-      label: 'Active Flashcards',
-      icon: Layers,
-      badge: `${deck.flashcards.length}`
-    },
-    {
-      id: 'quiz' as TabType,
-      label: 'Practice Quiz',
-      icon: CheckCircle2,
-      badge: quizScore ? `${quizScore.score}/${quizScore.total}` : `${deck.quiz.length} Qs`
-    },
-    {
-      id: 'mindmap' as TabType,
-      label: 'Concept Map',
-      icon: GitFork,
-      badge: null
+      label: 'Study Room',
+      icon: BookOpen
     },
     {
       id: 'tutor' as TabType,
-      label: 'Study Tutor',
-      icon: MessageSquare,
-      badge: null
+      label: 'AI Tutor',
+      icon: MessageCircle
+    },
+    {
+      id: 'flashcards' as TabType,
+      label: 'Flashcards',
+      icon: Layers
+    },
+    {
+      id: 'quiz' as TabType,
+      label: 'Quizzes',
+      icon: Trophy
+    },
+    {
+      id: 'mindmap' as TabType,
+      label: 'Mind Maps',
+      icon: GitFork
+    },
+    {
+      id: 'summary' as TabType,
+      label: 'Library',
+      icon: Folder
     },
     {
       id: 'presentation' as TabType,
-      label: 'Presentation Slides',
-      icon: Presentation,
-      badge: '8 Slides'
+      label: 'Settings',
+      icon: Settings
     }
   ];
 
   return (
-    <aside className="w-full md:w-64 bg-[#f0ebe0]/70 border-r border-[#ded8cb] p-3.5 flex flex-col justify-between shrink-0">
-      <div className="space-y-1">
-        <div className="px-3 py-2 text-[11px] font-semibold text-[#8a8074] uppercase tracking-wider">
-          Study Tools
+    <aside className="w-full md:w-60 bg-[#eef9f2]/95 border-r border-emerald-100/80 p-4 flex flex-col justify-between shrink-0 min-h-[calc(100vh-65px)]">
+      <div className="space-y-6">
+        {/* Brand Logo matching mockup */}
+        <div
+          onClick={() => onTabChange('dashboard')}
+          className="flex items-center gap-2.5 px-2 cursor-pointer group"
+        >
+          {/* Open Book Icon in green */}
+          <div className="text-emerald-600 transition-transform group-hover:scale-105">
+            <svg
+              className="w-7 h-7"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+          </div>
+          <span className="text-base font-extrabold tracking-tight text-stone-900 font-sans">
+            CogniStudy <span className="text-emerald-700">AI</span>
+          </span>
         </div>
 
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs transition-all duration-150 ${
-                isActive
-                  ? 'bg-[#26221f] text-[#faf7f0] font-medium shadow-xs'
-                  : 'text-[#5c534a] hover:text-[#26221f] hover:bg-[#e6dfd1] font-normal'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#faf7f0]' : 'text-[#8a8074]'}`} />
+        {/* Navigation Menu */}
+        <nav className="space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 relative ${
+                  isActive
+                    ? 'bg-[#dcfce7] text-emerald-900 shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-emerald-50/60'
+                }`}
+              >
+                {/* Active Left Indicator bar */}
+                {isActive && (
+                  <span className="absolute left-0 top-2 bottom-2 w-1 bg-emerald-600 rounded-r-full" />
+                )}
+                <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-700' : 'text-stone-500'}`} />
                 <span>{item.label}</span>
-              </div>
-              {item.badge && (
-                <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-                    isActive
-                      ? 'bg-white/20 text-[#faf7f0]'
-                      : 'bg-[#ded8cb] text-[#474039]'
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
-      {/* Course Demo Note */}
-      <div className="mt-6 p-3.5 bg-[#faf7f0] border border-[#ded8cb] rounded-xl text-xs space-y-1 shadow-xs">
-        <div className="flex items-center gap-1.5 font-semibold text-[#26221f]">
-          <Compass className="w-3.5 h-3.5 text-[#5c534a]" />
-          <span>Evaluation Demo</span>
+      {/* Upgrade to Pro Card matching mockup */}
+      <div className="mt-6 p-4 rounded-2xl bg-linear-to-b from-[#dcfce7]/90 to-[#bbf7d0]/60 border border-emerald-200/60 shadow-xs space-y-2.5">
+        <div className="flex items-center gap-1.5 text-emerald-800">
+          <div className="w-6 h-6 rounded-lg bg-emerald-600/10 text-emerald-700 flex items-center justify-center font-bold text-xs">
+            🌱
+          </div>
         </div>
-        <p className="text-[11px] text-[#7d7368] leading-normal">
-          5–7 min presentation mode with live demo and talking points.
-        </p>
+
+        <div>
+          <h4 className="text-xs font-bold text-stone-900 m-0">Upgrade to Pro</h4>
+          <p className="text-[10px] text-stone-600 mt-0.5 leading-snug">
+            Unlock unlimited notes, quizzes, and AI features.
+          </p>
+        </div>
+
+        <button
+          onClick={() => onTabChange('presentation')}
+          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-xs transition active:scale-98"
+        >
+          <Sparkles className="w-3 h-3" />
+          <span>Upgrade →</span>
+        </button>
       </div>
     </aside>
   );

@@ -4,6 +4,7 @@ import { DEEP_LEARNING_DECK } from './services/demoData';
 import { hasApiKey } from './services/gemini';
 import { Header } from './components/Header';
 import { Sidebar, type TabType } from './components/Sidebar';
+import { DashboardView } from './components/DashboardView';
 import { InputWorkspace } from './components/InputWorkspace';
 import { SummaryView } from './components/SummaryView';
 import { FlashcardDeck } from './components/FlashcardDeck';
@@ -15,7 +16,7 @@ import { ApiKeyModal } from './components/ApiKeyModal';
 
 export function App() {
   const [currentDeck, setCurrentDeck] = useState<StudyPackage>(DEEP_LEARNING_DECK);
-  const [activeTab, setActiveTab] = useState<TabType>('summary');
+  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null);
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
   const [keyConfigured, setKeyConfigured] = useState(() => hasApiKey());
@@ -29,31 +30,38 @@ export function App() {
   const handleSelectSampleDeck = (deck: StudyPackage) => {
     setCurrentDeck(deck);
     setQuizScore(null);
-    setActiveTab('summary');
   };
 
   return (
-    <div className="min-h-screen bg-[#f2eee5] text-[#26221f] flex flex-col font-sans">
-      {/* Top Application Header */}
-      <Header
-        currentDeck={currentDeck}
-        onSelectDeck={handleSelectSampleDeck}
-        hasKey={keyConfigured}
-        onOpenKeyModal={() => setIsKeyModalOpen(true)}
+    <div className="min-h-screen bg-[#f0faf4] text-stone-900 flex font-sans antialiased">
+      {/* Left Navigation Sidebar */}
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        deck={currentDeck}
+        quizScore={quizScore}
       />
 
-      {/* Main Body Layout with warm parchment borders */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row border-x border-[#ded8cb] bg-[#f7f4ec] shadow-xs">
-        {/* Navigation Sidebar */}
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          deck={currentDeck}
-          quizScore={quizScore}
+      {/* Main Body Column */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header */}
+        <Header
+          currentDeck={currentDeck}
+          onSelectDeck={handleSelectSampleDeck}
+          hasKey={keyConfigured}
+          onOpenKeyModal={() => setIsKeyModalOpen(true)}
         />
 
         {/* Dynamic Content Viewport */}
-        <main className="flex-1 p-5 sm:p-8 overflow-x-hidden bg-[#f4f0e6]">
+        <main className="flex-1 px-6 py-4 overflow-y-auto max-w-7xl w-full mx-auto">
+          {activeTab === 'dashboard' && (
+            <DashboardView
+              onNavigate={(tab) => setActiveTab(tab)}
+              onSelectDeck={handleSelectSampleDeck}
+              currentDeck={currentDeck}
+            />
+          )}
+
           {activeTab === 'workspace' && (
             <InputWorkspace
               onStudyPackageGenerated={handleStudyPackageGenerated}

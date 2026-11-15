@@ -7,7 +7,8 @@ import {
   Copy,
   Check,
   Tag,
-  Code2
+  Code2,
+  Sparkles
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 
@@ -85,20 +86,20 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Top Header Card */}
-      <div className="bg-[#faf7f0] border border-[#ded8cb] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white border border-stone-200/90 rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#26221f] tracking-tight m-0">
+          <h2 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight m-0">
             {deck.title}
           </h2>
-          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+          <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
             {deck.tags.map((t, idx) => (
               <span
                 key={idx}
-                className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#eae4d7] text-[#5c534a] border border-[#ded8cb] flex items-center gap-1"
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1"
               >
-                <Tag className="w-3 h-3 text-[#8a8074]" />
+                <Tag className="w-3 h-3 text-emerald-600" />
                 {t}
               </span>
             ))}
@@ -109,20 +110,20 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
           {/* Plain English Toggle */}
           <button
             onClick={() => setIsPlainEnglish(!isPlainEnglish)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+            className={`px-3.5 py-2 rounded-full text-xs font-semibold border transition-all shadow-xs ${
               isPlainEnglish
-                ? 'bg-[#e6ddcd] text-[#26221f] border-[#c7bcab] font-semibold'
-                : 'bg-[#faf7f0] text-[#5c534a] border-[#ded8cb] hover:bg-[#eae4d7]'
+                ? 'bg-amber-100 text-amber-900 border-amber-300'
+                : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
             }`}
           >
             {isPlainEnglish ? "Plain English: ON" : "Plain English Mode"}
           </button>
 
           {/* Audio Player Button */}
-          <div className="flex items-center rounded-lg border border-[#ded8cb] bg-[#eae4d7] p-0.5">
+          <div className="flex items-center rounded-full border border-emerald-200 bg-emerald-50/60 p-0.5 shadow-xs">
             <button
               onClick={handleAudioOverview}
-              className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#26221f] hover:bg-[#ded8cb] rounded-md transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100/80 rounded-full transition"
             >
               {isPlayingAudio && !isAudioPaused ? (
                 <>
@@ -136,8 +137,8 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
                 </>
               ) : (
                 <>
-                  <Volume2 className="w-3.5 h-3.5 text-[#5c534a]" />
-                  <span>Listen</span>
+                  <Volume2 className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Audio Overview</span>
                 </>
               )}
             </button>
@@ -145,7 +146,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
               <button
                 onClick={handleStopAudio}
                 title="Stop Audio"
-                className="p-1 text-[#8a8074] hover:text-[#26221f]"
+                className="p-1.5 text-stone-400 hover:text-stone-700"
               >
                 <VolumeX className="w-3.5 h-3.5" />
               </button>
@@ -155,67 +156,68 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
       </div>
 
       {/* Main Overview Box */}
-      <div className={`p-5 rounded-xl border transition-colors ${
+      <div className={`p-6 rounded-3xl border transition-colors shadow-xs ${
         isPlainEnglish
-          ? 'bg-[#f4ebe1] border-[#dbc8b5]'
-          : 'bg-[#faf7f0] border-[#ded8cb] shadow-xs'
+          ? 'bg-amber-50/70 border-amber-200'
+          : 'bg-white border-stone-200/90'
       }`}>
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#8a8074] mb-1.5">
-          {isPlainEnglish ? "Plain English Explanation" : "Core Overview"}
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
+          <Sparkles className="w-4 h-4 text-emerald-600" />
+          <span>{isPlainEnglish ? "Plain English Explanation" : "Core Academic Overview"}</span>
         </div>
-        <p className="text-sm leading-relaxed text-[#3d3732] font-normal">
+        <p className="text-sm sm:text-base leading-relaxed text-stone-800 font-normal">
           {isPlainEnglish ? deck.overviewEli5 : deck.overview}
         </p>
       </div>
 
       {/* Key Points Section */}
       <div className="space-y-4">
-        <div className="text-xs font-bold uppercase tracking-wider text-[#8a8074] px-0.5">
-          Key Concepts ({deck.keyPoints.length})
+        <div className="text-xs font-bold uppercase tracking-wider text-stone-500 px-1">
+          High-Yield Key Concepts ({deck.keyPoints.length})
         </div>
 
-        <div className="space-y-3.5">
+        <div className="space-y-4">
           {deck.keyPoints.map((kp, idx) => (
             <div
               key={kp.id}
-              className="bg-[#faf7f0] border border-[#ded8cb] rounded-xl p-5 shadow-xs hover:border-[#cfc6b6] transition-colors"
+              className="bg-white border border-stone-200/90 rounded-3xl p-6 shadow-xs hover:border-emerald-300 transition-colors"
             >
-              <div className="flex items-baseline justify-between gap-3 mb-2">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs font-mono text-[#8a8074]">
-                    0{idx + 1}.
+              <div className="flex items-start justify-between gap-3 mb-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center shrink-0">
+                    {idx + 1}
                   </span>
-                  <h3 className="text-base font-semibold text-[#26221f] tracking-tight">
+                  <h3 className="text-base font-bold text-stone-900 tracking-tight">
                     {kp.topic}
                   </h3>
                 </div>
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded border border-[#ded8cb] bg-[#eae4d7] text-[#5c534a] uppercase tracking-wide">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-stone-200 bg-stone-100 text-stone-600 uppercase tracking-wide">
                   {kp.importance}
                 </span>
               </div>
 
               {/* Technical summary */}
-              <p className="text-sm text-[#3d3732] leading-relaxed mb-3">
+              <p className="text-sm text-stone-700 leading-relaxed mb-3">
                 {kp.summary}
               </p>
 
               {/* Plain English explanation */}
-              <div className="bg-[#f4f0e6] border border-[#ded8cb] rounded-lg p-3 text-xs text-[#474039] leading-relaxed mb-3">
-                <span className="font-semibold text-[#26221f]">In plain English: </span>
+              <div className="bg-[#f0faf4] border border-emerald-100 rounded-2xl p-3.5 text-xs text-stone-700 leading-relaxed mb-3.5">
+                <span className="font-bold text-emerald-900">In plain English: </span>
                 <span>{kp.eli5}</span>
               </div>
 
               {/* Formula or Code block */}
               {kp.formulasOrSyntax && kp.formulasOrSyntax.length > 0 && (
-                <div className="bg-[#26221f] text-[#f4f0e6] p-3 rounded-lg font-mono text-xs relative group">
-                  <div className="flex items-center justify-between mb-1 text-[11px] text-[#b8ad9b] font-sans">
-                    <span className="flex items-center gap-1.5">
-                      <Code2 className="w-3.5 h-3.5 text-[#b8ad9b]" />
-                      Key Formulation
+                <div className="bg-stone-900 text-emerald-400 p-3.5 rounded-2xl font-mono text-xs relative group shadow-xs">
+                  <div className="flex items-center justify-between mb-1 text-[11px] text-stone-400 font-sans">
+                    <span className="flex items-center gap-1.5 text-stone-300">
+                      <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                      Key Mathematical Formulation
                     </span>
                     <button
                       onClick={() => handleCopyCode(kp.id, kp.formulasOrSyntax!.join('\n'))}
-                      className="text-[#b8ad9b] hover:text-[#faf7f0] transition flex items-center gap-1"
+                      className="text-stone-400 hover:text-white transition flex items-center gap-1"
                     >
                       {copiedId === kp.id ? (
                         <>
@@ -230,7 +232,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
                       )}
                     </button>
                   </div>
-                  <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-[#faf7f0]">
+                  <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-emerald-300">
                     {kp.formulasOrSyntax.join('\n')}
                   </pre>
                 </div>
