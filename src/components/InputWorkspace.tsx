@@ -1,5 +1,5 @@
 import { useState, useRef, type FC, type ChangeEvent } from 'react';
-import { UploadCloud, FileText, Sparkles, Loader2, ArrowRight, BookOpen, AlertCircle } from 'lucide-react';
+import { UploadCloud, FileText, ArrowRight, Loader2, BookOpen, AlertCircle } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 import { generateStudyPackage } from '../services/gemini';
 import { extractTextFromPdf } from '../services/pdfReader';
@@ -34,8 +34,9 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
         const text = await file.text();
         setInputText(text);
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Failed to read file.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to read file.';
+      setErrorMsg(message);
     } finally {
       setIsProcessing(false);
     }
@@ -43,7 +44,7 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
 
   const handleGenerate = async () => {
     if (!inputText.trim()) {
-      setErrorMsg('Please enter or paste your study notes first.');
+      setErrorMsg('Please paste or upload some notes first.');
       return;
     }
 
@@ -53,8 +54,9 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
     try {
       const generated = await generateStudyPackage(inputText);
       onStudyPackageGenerated(generated);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Generation failed. Please try again.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong while generating the deck.';
+      setErrorMsg(message);
     } finally {
       setIsProcessing(false);
     }
@@ -63,50 +65,43 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
   const wordCount = inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Intro Banner */}
-      <div className="bg-linear-to-r from-indigo-900/90 via-indigo-800 to-purple-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 -mt-6 -mr-6 w-56 h-56 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-indigo-200 text-xs font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>AI Knowledge Synthesizer</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2 text-white">
-            Transform Any Lecture Notes or PDF into an Active Study Engine
-          </h2>
-          <p className="text-indigo-100/90 text-sm max-w-2xl leading-relaxed">
-            Upload course slides, syllabus readings, or textbook passages. CogniStudy AI automatically generates high-yield summaries, 3D active-recall flashcards, adaptive exam quizzes, and visual mind maps.
-          </p>
+    <div className="max-w-3xl mx-auto space-y-6">
+      {/* Intro Header */}
+      <div className="border-b border-stone-200 pb-5">
+        <h2 className="text-2xl font-bold tracking-tight text-stone-900 m-0">
+          Add Study Material
+        </h2>
+        <p className="text-sm text-stone-600 mt-1.5 leading-relaxed">
+          Upload a lecture slide PDF, textbook excerpt, or paste syllabus notes below. The app breaks down dense text into key concepts, interactive flashcards, practice exam questions, and a concept map.
+        </p>
+
+        {/* 1-Click Samples */}
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-stone-500 flex items-center gap-1.5">
+            <BookOpen className="w-3.5 h-3.5 text-stone-600" />
+            Or try a sample topic:
+          </span>
+          <button
+            onClick={() => onSelectSampleDeck(DEEP_LEARNING_DECK)}
+            className="px-3 py-1 rounded-md text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition"
+          >
+            Deep Learning & Neural Networks
+          </button>
+          <button
+            onClick={() => onSelectSampleDeck(OPERATING_SYSTEMS_DECK)}
+            className="px-3 py-1 rounded-md text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200 transition"
+          >
+            OS Concurrency & Deadlocks
+          </button>
         </div>
       </div>
 
-      {/* Quick Load Sample Buttons */}
-      <div className="flex flex-wrap items-center gap-2 pt-1">
-        <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5 mr-1">
-          <BookOpen className="w-3.5 h-3.5 text-indigo-500" />
-          1-Click Demo Decks:
-        </span>
-        <button
-          onClick={() => onSelectSampleDeck(DEEP_LEARNING_DECK)}
-          className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition shadow-sm"
-        >
-          🔥 Deep Learning & Neural Networks
-        </button>
-        <button
-          onClick={() => onSelectSampleDeck(OPERATING_SYSTEMS_DECK)}
-          className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 transition shadow-sm"
-        >
-          ⚡ OS Concurrency & Deadlocks
-        </button>
-      </div>
-
-      {/* Upload and Paste Container */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        {/* Dropzone */}
+      {/* Main Workspace Card */}
+      <div className="bg-white border border-stone-200 rounded-xl p-6 shadow-xs space-y-5">
+        {/* Upload dropzone */}
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-6 text-center hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 cursor-pointer transition group mb-5"
+          className="border border-dashed border-stone-300 hover:border-stone-400 bg-stone-50/50 hover:bg-stone-50 rounded-lg p-6 text-center cursor-pointer transition duration-150 group"
         >
           <input
             type="file"
@@ -115,60 +110,59 @@ export const InputWorkspace: FC<InputWorkspaceProps> = ({
             accept=".pdf,.txt,.md,.json"
             className="hidden"
           />
-          <div className="w-12 h-12 mx-auto rounded-full bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition mb-3">
-            <UploadCloud className="w-6 h-6" />
+          <div className="w-10 h-10 mx-auto rounded-full bg-stone-200/70 flex items-center justify-center text-stone-700 mb-2.5 group-hover:scale-105 transition-transform">
+            <UploadCloud className="w-5 h-5" />
           </div>
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <p className="text-xs font-semibold text-stone-800">
             Click to upload PDF, TXT, or Markdown notes
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Supports textbook chapters, lecture slides & research papers
+          <p className="text-[11px] text-stone-500 mt-0.5">
+            Text is parsed securely directly in your browser
           </p>
         </div>
 
         {/* Text Area */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-indigo-500" />
-              Or Paste Text Directly
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-stone-500">
+            <span className="font-medium text-stone-700 flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-stone-500" />
+              Paste Raw Notes or Lecture Transcript
             </span>
-            <span>{wordCount} words</span>
+            <span className="font-mono text-[11px]">{wordCount} words</span>
           </div>
 
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Paste raw lecture notes, syllabus concepts, textbook excerpts, or meeting transcripts here..."
+            placeholder="Paste your course notes, slides text, definitions, or textbook reading here..."
             rows={8}
-            className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none transition"
+            className="w-full p-3.5 rounded-lg border border-stone-200 bg-white text-stone-900 text-sm focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none resize-none transition font-sans leading-relaxed"
           />
         </div>
 
         {errorMsg && (
-          <div className="mt-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="p-3 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        {/* Action Button */}
-        <div className="mt-5 flex items-center justify-end">
+        {/* Footer actions */}
+        <div className="flex items-center justify-end pt-1">
           <button
             onClick={handleGenerate}
             disabled={isProcessing || !inputText.trim()}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-md shadow-indigo-500/25 transition active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-stone-900 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-xs transition active:scale-98"
           >
             {isProcessing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Synthesizing Knowledge Base...</span>
+                <Loader2 className="w-4 h-4 animate-spin text-stone-300" />
+                <span>Analyzing Notes...</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
-                <span>Generate Study Package</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <span>Build Study Deck</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>

@@ -33,7 +33,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col font-sans">
       {/* Top Application Header */}
       <Header
         currentDeck={currentDeck}
@@ -43,7 +43,7 @@ export function App() {
       />
 
       {/* Main Body Layout */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row">
+      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row border-x border-stone-200/80 bg-white shadow-xs">
         {/* Navigation Sidebar */}
         <Sidebar
           activeTab={activeTab}
@@ -53,7 +53,7 @@ export function App() {
         />
 
         {/* Dynamic Content Viewport */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+        <main className="flex-1 p-5 sm:p-8 overflow-x-hidden bg-stone-50/60">
           {activeTab === 'workspace' && (
             <InputWorkspace
               onStudyPackageGenerated={handleStudyPackageGenerated}

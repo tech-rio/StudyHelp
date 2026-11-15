@@ -4,10 +4,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Shuffle,
-  RotateCcw,
-  Sparkles,
-  CheckCircle,
-  HelpCircle
+  RotateCcw
 } from 'lucide-react';
 import type { Flashcard } from '../types/study';
 
@@ -48,8 +45,8 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
 
   if (!cards || cards.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
-        No flashcards generated yet. Please upload study material first.
+      <div className="text-center py-12 text-stone-500 text-sm">
+        No flashcards generated yet. Add notes to create a deck.
       </div>
     );
   }
@@ -73,7 +70,6 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
     const updated = [...cards];
     updated[currentIndex] = { ...updated[currentIndex], mastery: rating };
     setCards(updated);
-    // Auto advance
     setTimeout(() => {
       handleNext();
     }, 200);
@@ -84,44 +80,44 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
   const learningCount = cards.filter(c => c.mastery === 'learning' || !c.mastery).length;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      {/* Header and stats */}
+    <div className="max-w-2xl mx-auto space-y-5">
+      {/* Top Header & Progress */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-stone-900 tracking-tight flex items-center gap-2">
             Active Recall Flashcards
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-semibold">
-              {currentIndex + 1} / {cards.length}
+            <span className="text-xs px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-mono font-medium">
+              {currentIndex + 1} of {cards.length}
             </span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Click card or press <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono">Space</kbd> to flip
+          <p className="text-xs text-stone-500 mt-0.5">
+            Press <kbd className="px-1.5 py-0.5 rounded bg-stone-200 text-stone-700 font-mono text-[10px]">Space</kbd> or click to flip
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={handleShuffle}
-            title="Shuffle Deck"
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition"
+            title="Shuffle cards"
+            className="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 transition"
           >
-            <Shuffle className="w-4 h-4" />
+            <Shuffle className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleReset}
-            title="Reset Ratings"
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition"
+            title="Reset progress"
+            className="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 transition"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden flex">
+      {/* Progress tracker bar */}
+      <div className="w-full bg-stone-200 h-1.5 rounded-full overflow-hidden flex">
         <div
           style={{ width: `${(masteredCount / cards.length) * 100}%` }}
-          className="bg-emerald-500 transition-all duration-300"
+          className="bg-emerald-600 transition-all duration-300"
           title={`Mastered: ${masteredCount}`}
         />
         <div
@@ -131,127 +127,120 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
         />
         <div
           style={{ width: `${(learningCount / cards.length) * 100}%` }}
-          className="bg-indigo-500 transition-all duration-300"
+          className="bg-stone-400 transition-all duration-300"
           title={`Learning: ${learningCount}`}
         />
       </div>
 
-      {/* 3D Flashcard Flip Container */}
+      {/* 3D Flashcard Flip Canvas */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="w-full h-80 cursor-pointer perspective-1000 select-none"
+        className="w-full h-76 cursor-pointer perspective-1000 select-none"
       >
         <div
-          className={`relative w-full h-full transition-transform duration-500 transform-style-preserve-3d ${
+          className={`relative w-full h-full transition-transform duration-500 ease-out transform-style-preserve-3d ${
             isFlipped ? 'rotate-y-180' : ''
           }`}
         >
           {/* FRONT */}
-          <div className="absolute inset-0 backface-hidden bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-slate-800 rounded-3xl p-8 flex flex-col justify-between shadow-xl hover:border-indigo-400 transition-colors">
-            <div className="flex items-center justify-between text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider">
-              <span className="flex items-center gap-1.5">
-                <HelpCircle className="w-4 h-4" />
-                Prompt / Question
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 text-[11px]">
+          <div className="absolute inset-0 backface-hidden bg-white border border-stone-200 rounded-xl p-7 flex flex-col justify-between shadow-xs hover:border-stone-400 transition-colors">
+            <div className="flex items-center justify-between text-xs text-stone-500">
+              <span className="font-medium tracking-wide uppercase text-[10px]">Question</span>
+              <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-600 text-[11px]">
                 {currentCard.category}
               </span>
             </div>
 
-            <div className="my-auto text-center">
-              <p className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 leading-snug">
+            <div className="my-auto text-center px-4">
+              <p className="text-lg font-semibold text-stone-900 leading-snug">
                 {currentCard.front}
               </p>
             </div>
 
-            <div className="flex items-center justify-center gap-1.5 text-xs text-slate-400 font-medium">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-stone-400 font-medium">
               <RotateCw className="w-3.5 h-3.5" />
               <span>Click to reveal answer</span>
             </div>
           </div>
 
           {/* BACK */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-linear-to-br from-indigo-950 via-slate-900 to-slate-950 border-2 border-indigo-500/50 rounded-3xl p-8 text-white flex flex-col justify-between shadow-2xl">
-            <div className="flex items-center justify-between text-xs text-indigo-300 font-bold uppercase tracking-wider">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                Verified Answer
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-indigo-900/60 border border-indigo-700/60 text-[11px] text-indigo-200">
+          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-stone-900 border border-stone-800 rounded-xl p-7 text-white flex flex-col justify-between shadow-md">
+            <div className="flex items-center justify-between text-xs text-stone-400">
+              <span className="font-medium tracking-wide uppercase text-[10px] text-emerald-400">Answer</span>
+              <span className="px-2 py-0.5 rounded bg-stone-800 text-stone-300 text-[11px]">
                 {currentCard.category}
               </span>
             </div>
 
-            <div className="my-auto overflow-y-auto max-h-48 pr-2">
-              <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-normal whitespace-pre-line text-left">
+            <div className="my-auto overflow-y-auto max-h-40 px-2 text-left">
+              <p className="text-base text-stone-100 leading-relaxed font-normal whitespace-pre-line">
                 {currentCard.back}
               </p>
             </div>
 
-            <div className="flex items-center justify-center gap-1.5 text-xs text-indigo-300/80 font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Rate your recall below</span>
+            <div className="text-center text-[11px] text-stone-400 font-medium">
+              Rate how well you knew this below
             </div>
           </div>
         </div>
       </div>
 
-      {/* Spaced Repetition Rating Buttons */}
-      <div className="space-y-3">
-        <div className="text-center text-xs font-semibold uppercase tracking-wider text-slate-400">
-          How well did you recall this?
+      {/* Spaced Repetition Buttons */}
+      <div className="space-y-2">
+        <div className="text-center text-[11px] font-medium text-stone-400 uppercase tracking-wider">
+          Self Assessment
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2.5">
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleRateMastery('learning');
             }}
-            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 text-xs font-bold hover:bg-rose-100 transition active:scale-95 shadow-sm"
+            className="py-2 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-medium transition active:scale-98"
           >
-            <span>🔴 Hard</span>
+            Hard (Review Soon)
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleRateMastery('reviewing');
             }}
-            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 text-xs font-bold hover:bg-amber-100 transition active:scale-95 shadow-sm"
+            className="py-2 px-3 rounded-lg border border-amber-200 bg-amber-50/50 hover:bg-amber-100 text-amber-900 text-xs font-medium transition active:scale-98"
           >
-            <span>🟡 Good</span>
+            Good (Understood)
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleRateMastery('mastered');
             }}
-            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 transition active:scale-95 shadow-sm"
+            className="py-2 px-3 rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 text-emerald-900 text-xs font-medium transition active:scale-98"
           >
-            <span>🟢 Mastered</span>
+            Easy (Mastered)
           </button>
         </div>
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between pt-1">
         <button
           onClick={handlePrev}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-3.5 h-3.5" />
           <span>Previous</span>
         </button>
 
-        <div className="text-xs text-slate-400 font-medium">
-          Use ← / → arrow keys
-        </div>
+        <span className="text-xs text-stone-400 font-mono">
+          ← / → keys
+        </span>
 
         <button
           onClick={handleNext}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm"
+          className="flex items-center gap-1 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-stone-900 hover:bg-stone-800 text-white transition shadow-xs"
         >
-          <span>Next Card</span>
-          <ChevronRight className="w-4 h-4" />
+          <span>Next</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

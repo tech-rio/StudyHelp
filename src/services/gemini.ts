@@ -29,8 +29,8 @@ export async function generateStudyPackage(rawText: string, customApiKey?: strin
   }
 
   const prompt = `
-You are CogniStudy AI, an elite academic learning science engine.
-Analyze the following study material thoroughly and produce an all-in-one comprehensive Study Package in strict JSON format.
+You are CogniStudy, a helpful academic study assistant.
+Read the following course notes thoroughly and produce a structured study deck in strict JSON format.
 
 Input Material:
 """
@@ -41,14 +41,14 @@ You must respond with ONLY valid JSON matching this schema (no markdown fences, 
 {
   "title": "Clear concise topic title",
   "overview": "2-3 sentence academic overview",
-  "overviewEli5": "1-2 sentence Explain Like I'm 5 intuitive analogy",
+  "overviewEli5": "1-2 sentence plain English analogy",
   "tags": ["tag1", "tag2", "tag3"],
   "keyPoints": [
     {
       "id": "kp-1",
       "topic": "Name of subtopic",
       "summary": "Detailed technical summary",
-      "eli5": "Simple everyday analogy",
+      "eli5": "Plain English everyday explanation",
       "formulasOrSyntax": ["optional formula or key definition"],
       "importance": "critical" | "high" | "medium"
     }
@@ -57,7 +57,7 @@ You must respond with ONLY valid JSON matching this schema (no markdown fences, 
     {
       "id": "fc-1",
       "front": "Active recall question",
-      "back": "Precise answer explanation",
+      "back": "Clear answer explanation",
       "category": "Subtopic tag",
       "mastery": "learning"
     }
@@ -65,23 +65,23 @@ You must respond with ONLY valid JSON matching this schema (no markdown fences, 
   "quiz": [
     {
       "id": "q-1",
-      "question": "Rigorous multiple choice question testing concept application",
+      "question": "Multiple choice question testing concept application",
       "options": ["Option A", "Option B", "Option C", "Option D"],
       "correctIndex": 0,
       "explanation": "Clear reason why the correct option is right and others are false",
-      "tip": "Helpful conceptual clue"
+      "tip": "Helpful conceptual tip"
     }
   ],
   "mindMap": {
     "id": "root",
     "label": "Main Topic",
     "description": "Central subject description",
-    "color": "#6366f1",
+    "color": "#1c1917",
     "children": [
       {
         "id": "sub-1",
         "label": "Branch 1 Name",
-        "color": "#3b82f6",
+        "color": "#44403c",
         "children": [
           { "id": "leaf-1", "label": "Concept Detail" }
         ]
@@ -163,7 +163,7 @@ function parseStudyPackageJSON(rawJson: string, originalText: string): StudyPack
       mindMap: parsed.mindMap || {
         id: "root",
         label: parsed.title || "Study Topic",
-        color: "#6366f1",
+        color: "#1c1917",
         children: []
       },
       generatedAt: new Date().toISOString()
@@ -235,12 +235,12 @@ function createSimulatedPackageFromText(text: string): StudyPackage {
     mindMap: {
       id: "root",
       label: title,
-      color: "#6366f1",
+      color: "#1c1917",
       children: [
         {
           id: "branch-1",
-          label: "Foundations & Core Principles",
-          color: "#3b82f6",
+          label: "Foundations & Principles",
+          color: "#44403c",
           children: [
             { id: "leaf-1", label: lines[0]?.slice(0, 25) || "Primary Concept" },
             { id: "leaf-2", label: lines[1]?.slice(0, 25) || "Essential Rules" }
@@ -248,11 +248,11 @@ function createSimulatedPackageFromText(text: string): StudyPackage {
         },
         {
           id: "branch-2",
-          label: "Mechanisms & Execution",
-          color: "#10b981",
+          label: "Mechanisms & Application",
+          color: "#047857",
           children: [
-            { id: "leaf-3", label: lines[2]?.slice(0, 25) || "Operating Workflow" },
-            { id: "leaf-4", label: lines[3]?.slice(0, 25) || "Analytical Bounds" }
+            { id: "leaf-3", label: lines[2]?.slice(0, 25) || "Working Process" },
+            { id: "leaf-4", label: lines[3]?.slice(0, 25) || "Analysis & Limits" }
           ]
         }
       ]

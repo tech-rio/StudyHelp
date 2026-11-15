@@ -162,13 +162,13 @@ export const DEEP_LEARNING_DECK: StudyPackage = {
   mindMap: {
     id: "root",
     label: "Deep Learning Foundations",
-    color: "#6366f1",
+    color: "#1c1917",
     description: "Core architecture, mathematical foundations, and training mechanics.",
     children: [
       {
         id: "arch",
         label: "Network Architecture",
-        color: "#3b82f6",
+        color: "#44403c",
         description: "Structural layout of artificial neural networks.",
         children: [
           { id: "node-neuron", label: "Artificial Neuron (Weights, Bias, Sum)" },
@@ -179,7 +179,7 @@ export const DEEP_LEARNING_DECK: StudyPackage = {
       {
         id: "optimization",
         label: "Training & Optimization",
-        color: "#10b981",
+        color: "#047857",
         description: "How models compute loss and update parameters.",
         children: [
           { id: "node-loss", label: "Loss Functions (Cross-Entropy, MSE, Huber)" },
@@ -190,7 +190,7 @@ export const DEEP_LEARNING_DECK: StudyPackage = {
       {
         id: "challenges",
         label: "Training Challenges & Solutions",
-        color: "#f59e0b",
+        color: "#b45309",
         description: "Overcoming gradient instability and overfitting.",
         children: [
           { id: "node-vanishing", label: "Vanishing / Exploding Gradients" },
@@ -296,7 +296,7 @@ export const OPERATING_SYSTEMS_DECK: StudyPackage = {
   mindMap: {
     id: "os-root",
     label: "OS Concurrency & Resource Management",
-    color: "#0284c7",
+    color: "#1c1917",
     description: "Threads, race conditions, synchronization and deadlock handling.",
     children: [
       {
