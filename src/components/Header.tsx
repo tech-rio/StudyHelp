@@ -32,9 +32,9 @@ export const Header: FC<HeaderProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search your notes, topics, or ask anything..."
-              className="w-full pl-9 pr-16 py-2 rounded-full border border-stone-200/90 bg-white text-xs text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs transition"
+              className="w-full pl-9 pr-16 py-2 rounded-full border border-stone-200/90 bg-white text-xs sm:text-[13px] font-medium text-stone-800 placeholder:text-stone-400/90 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs transition"
             />
-            <kbd className="absolute right-3 px-1.5 py-0.5 text-[10px] font-mono text-stone-400 bg-stone-100 rounded border border-stone-200 pointer-events-none">
+            <kbd className="absolute right-3 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-stone-400 bg-stone-100 rounded border border-stone-200 pointer-events-none">
               Ctrl + K
             </kbd>
           </div>

@@ -42,7 +42,7 @@ export const DashboardView: FC<DashboardViewProps> = ({
             <span>Your AI Study Partner</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-stone-900 leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold tracking-tight text-stone-900 leading-[1.15]">
             Study Smarter,<br />Learn Deeper.
           </h1>
 
@@ -53,7 +53,7 @@ export const DashboardView: FC<DashboardViewProps> = ({
           <div className="flex flex-wrap items-center gap-3 mt-6">
             <button
               onClick={() => onNavigate('workspace')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 transition-all hover:scale-102 active:scale-98"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold tracking-tight shadow-sm shadow-emerald-600/20 transition-all hover:scale-102 active:scale-98"
             >
               <Plus className="w-4 h-4" />
               <span>New Study Session</span>
@@ -63,7 +63,7 @@ export const DashboardView: FC<DashboardViewProps> = ({
                 onSelectDeck(DEEP_LEARNING_DECK);
                 onNavigate('summary');
               }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white hover:bg-stone-50 text-stone-800 text-xs font-bold border border-stone-200 shadow-xs transition-all hover:scale-102 active:scale-98"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white hover:bg-stone-50 text-stone-800 text-xs font-bold tracking-tight border border-stone-200 shadow-xs transition-all hover:scale-102 active:scale-98"
             >
               <Play className="w-3.5 h-3.5 fill-stone-800 text-stone-800" />
               <span>Try a Sample Topic</span>
@@ -95,10 +95,10 @@ export const DashboardView: FC<DashboardViewProps> = ({
             <ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-stone-900 group-hover:text-emerald-700 transition">
+            <h3 className="text-sm font-bold tracking-tight text-stone-900 group-hover:text-emerald-700 transition">
               Summarize Notes
             </h3>
-            <p className="text-[11px] text-stone-500 mt-1 leading-snug">
+            <p className="text-xs text-stone-500 mt-1 leading-snug font-normal">
               Get concise summaries, key concepts & formulas
             </p>
           </div>
@@ -116,10 +116,10 @@ export const DashboardView: FC<DashboardViewProps> = ({
             <ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-cyan-600 group-hover:translate-x-0.5 transition" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-stone-900 group-hover:text-cyan-700 transition">
+            <h3 className="text-sm font-bold tracking-tight text-stone-900 group-hover:text-cyan-700 transition">
               Flashcards
             </h3>
-            <p className="text-[11px] text-stone-500 mt-1 leading-snug">
+            <p className="text-xs text-stone-500 mt-1 leading-snug font-normal">
               Active recall with interactive cards
             </p>
           </div>
@@ -137,10 +137,10 @@ export const DashboardView: FC<DashboardViewProps> = ({
             <ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-stone-900 group-hover:text-emerald-700 transition">
+            <h3 className="text-sm font-bold tracking-tight text-stone-900 group-hover:text-emerald-700 transition">
               Adaptive Quiz
             </h3>
-            <p className="text-[11px] text-stone-500 mt-1 leading-snug">
+            <p className="text-xs text-stone-500 mt-1 leading-snug font-normal">
               MCQs, instant scoring and detailed explanations
             </p>
           </div>
@@ -158,10 +158,10 @@ export const DashboardView: FC<DashboardViewProps> = ({
             <ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-teal-600 group-hover:translate-x-0.5 transition" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-stone-900 group-hover:text-teal-700 transition">
+            <h3 className="text-sm font-bold tracking-tight text-stone-900 group-hover:text-teal-700 transition">
               Mind Map
             </h3>
-            <p className="text-[11px] text-stone-500 mt-1 leading-snug">
+            <p className="text-xs text-stone-500 mt-1 leading-snug font-normal">
               Visual concept tree to connect and remember
             </p>
           </div>
@@ -179,10 +179,10 @@ export const DashboardView: FC<DashboardViewProps> = ({
             <ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-cyan-600 group-hover:translate-x-0.5 transition" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-stone-900 group-hover:text-cyan-700 transition">
+            <h3 className="text-sm font-bold tracking-tight text-stone-900 group-hover:text-cyan-700 transition">
               AI Tutor
             </h3>
-            <p className="text-[11px] text-stone-500 mt-1 leading-snug">
+            <p className="text-xs text-stone-500 mt-1 leading-snug font-normal">
               Ask, discuss and learn with a Socratic AI mentor
             </p>
           </div>
@@ -195,17 +195,17 @@ export const DashboardView: FC<DashboardViewProps> = ({
         <div className="lg:col-span-3 bg-white border border-stone-200/80 rounded-2xl p-5 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-stone-100 flex items-center justify-center text-stone-700">
+              <div className="w-7 h-7 rounded-lg bg-emerald-100/80 flex items-center justify-center text-emerald-800">
                 <Clock className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-stone-900 m-0">Recent Study Sessions</h2>
-                <p className="text-[11px] text-stone-500">Continue where you left off.</p>
+                <h2 className="text-sm font-bold tracking-tight text-stone-900 m-0">Recent Study Sessions</h2>
+                <p className="text-xs text-stone-500 font-normal">Continue where you left off.</p>
               </div>
             </div>
             <button
               onClick={() => onNavigate('workspace')}
-              className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 transition"
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 transition"
             >
               <span>View All</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -226,15 +226,15 @@ export const DashboardView: FC<DashboardViewProps> = ({
                   <FileText className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-stone-900">Operating Systems – Concurrency</h4>
-                  <p className="text-[11px] text-stone-400">PDF · 24 pages</p>
+                  <h4 className="text-xs font-bold tracking-tight text-stone-900">Operating Systems – Concurrency</h4>
+                  <p className="text-[11px] text-stone-500 font-medium">PDF · 24 pages</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800">
+                <span className="text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800">
                   Summary + Quiz
                 </span>
-                <span className="text-[11px] text-stone-400 font-mono">2h ago</span>
+                <span className="text-[11px] text-stone-400 font-semibold font-sans">2h ago</span>
                 <MoreVertical className="w-3.5 h-3.5 text-stone-400" />
               </div>
             </div>
@@ -252,15 +252,15 @@ export const DashboardView: FC<DashboardViewProps> = ({
                   <FileText className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-stone-900">Deep Learning & Backpropagation</h4>
-                  <p className="text-[11px] text-stone-400">Notes · 12 pages</p>
+                  <h4 className="text-xs font-bold tracking-tight text-stone-900">Deep Learning & Backpropagation</h4>
+                  <p className="text-[11px] text-stone-500 font-medium">Notes · 12 pages</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                <span className="text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                   All Tools
                 </span>
-                <span className="text-[11px] text-stone-400 font-mono">Yesterday</span>
+                <span className="text-[11px] text-stone-400 font-semibold font-sans">Yesterday</span>
                 <MoreVertical className="w-3.5 h-3.5 text-stone-400" />
               </div>
             </div>
@@ -278,15 +278,15 @@ export const DashboardView: FC<DashboardViewProps> = ({
                   <FileText className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-stone-900">Digital Electronics – Flip-Flops</h4>
-                  <p className="text-[11px] text-stone-400">PDF · 18 pages</p>
+                  <h4 className="text-xs font-bold tracking-tight text-stone-900">Digital Electronics – Flip-Flops</h4>
+                  <p className="text-[11px] text-stone-500 font-medium">PDF · 18 pages</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">
+                <span className="text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">
                   Flashcards
                 </span>
-                <span className="text-[11px] text-stone-400 font-mono">2 days ago</span>
+                <span className="text-[11px] text-stone-400 font-semibold font-sans">2 days ago</span>
                 <MoreVertical className="w-3.5 h-3.5 text-stone-400" />
               </div>
             </div>
@@ -302,11 +302,11 @@ export const DashboardView: FC<DashboardViewProps> = ({
                   <BarChart2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-stone-900 m-0">Your Learning Progress</h2>
-                  <p className="text-[11px] text-stone-500">Track your study activity and improvement.</p>
+                  <h2 className="text-sm font-bold tracking-tight text-stone-900 m-0">Your Learning Progress</h2>
+                  <p className="text-xs text-stone-500 font-normal">Track your study activity and improvement.</p>
                 </div>
               </div>
-              <button className="flex items-center gap-1 text-[11px] text-stone-500 font-medium px-2 py-1 rounded-md border border-stone-200 bg-stone-50 hover:bg-stone-100">
+              <button className="flex items-center gap-1 text-[11px] text-stone-600 font-semibold px-2 py-1 rounded-md border border-stone-200 bg-stone-50 hover:bg-stone-100">
                 <span>This Week</span>
                 <ChevronDown className="w-3 h-3 text-stone-400" />
               </button>
@@ -336,8 +336,8 @@ export const DashboardView: FC<DashboardViewProps> = ({
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center text-center">
-                  <span className="text-base font-extrabold text-stone-900 leading-none">76%</span>
-                  <span className="text-[9px] text-stone-400 mt-0.5">Study Goal</span>
+                  <span className="text-2xl font-black tracking-tight text-stone-900 leading-none">76%</span>
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider text-stone-400 mt-1">Study Goal</span>
                 </div>
               </div>
 
@@ -345,18 +345,18 @@ export const DashboardView: FC<DashboardViewProps> = ({
               <div className="grid grid-cols-1 gap-1.5 flex-1 text-xs">
                 <div className="flex items-center gap-2 text-stone-700">
                   <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="font-bold text-stone-900">6</span>
-                  <span className="text-stone-500 text-[11px]">Topics</span>
+                  <span className="font-extrabold text-sm text-stone-900">6</span>
+                  <span className="text-stone-500 text-xs font-medium">Topics</span>
                 </div>
                 <div className="flex items-center gap-2 text-stone-700">
                   <Target className="w-3.5 h-3.5 text-cyan-600" />
-                  <span className="font-bold text-stone-900">128</span>
-                  <span className="text-stone-500 text-[11px]">Questions</span>
+                  <span className="font-extrabold text-sm text-stone-900">128</span>
+                  <span className="text-stone-500 text-xs font-medium">Questions</span>
                 </div>
                 <div className="flex items-center gap-2 text-stone-700">
                   <Flame className="w-3.5 h-3.5 text-amber-500" />
-                  <span className="font-bold text-stone-900">12</span>
-                  <span className="text-stone-500 text-[11px]">Day Streak</span>
+                  <span className="font-extrabold text-sm text-stone-900">12</span>
+                  <span className="text-stone-500 text-xs font-medium">Day Streak</span>
                 </div>
               </div>
             </div>
@@ -377,11 +377,11 @@ export const DashboardView: FC<DashboardViewProps> = ({
                 <div key={idx} className="flex flex-col items-center gap-1.5">
                   <div className="w-4 bg-emerald-100 rounded-full h-10 flex items-end overflow-hidden">
                     <div
-                      style={{ height: item.h }}
+                       style={{ height: item.h }}
                       className="w-full bg-emerald-500 rounded-full transition-all duration-500"
                     />
                   </div>
-                  <span className="text-[9px] text-stone-400 font-medium">{item.day}</span>
+                  <span className="text-[10px] text-stone-400 font-semibold tracking-wide">{item.day}</span>
                 </div>
               ))}
             </div>

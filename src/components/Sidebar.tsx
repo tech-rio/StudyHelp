@@ -93,8 +93,8 @@ export const Sidebar: FC<SidebarProps> = ({
               <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
             </svg>
           </div>
-          <span className="text-base font-extrabold tracking-tight text-stone-900 font-sans">
-            CogniStudy <span className="text-emerald-700">AI</span>
+          <span className="text-[17px] font-extrabold tracking-tight text-stone-900 font-sans">
+            CogniStudy<span className="text-emerald-600 ml-0.5">AI</span>
           </span>
         </div>
 
@@ -107,10 +107,10 @@ export const Sidebar: FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 relative ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs tracking-tight transition-all duration-150 relative ${
                   isActive
-                    ? 'bg-[#dcfce7] text-emerald-900 shadow-xs'
-                    : 'text-stone-600 hover:text-stone-900 hover:bg-emerald-50/60'
+                    ? 'bg-[#dcfce7] text-emerald-950 font-bold shadow-xs'
+                    : 'text-stone-600 font-medium hover:text-stone-900 hover:bg-emerald-50/70'
                 }`}
               >
                 {/* Active Left Indicator bar */}
@@ -134,17 +134,17 @@ export const Sidebar: FC<SidebarProps> = ({
         </div>
 
         <div>
-          <h4 className="text-xs font-bold text-stone-900 m-0">Upgrade to Pro</h4>
-          <p className="text-[10px] text-stone-600 mt-0.5 leading-snug">
+          <h4 className="text-xs font-bold tracking-tight text-stone-900 m-0">Upgrade to Pro</h4>
+          <p className="text-[11px] text-stone-600 mt-0.5 leading-snug font-normal">
             Unlock unlimited notes, quizzes, and AI features.
           </p>
         </div>
 
         <button
           onClick={() => onTabChange('presentation')}
-          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-xs transition active:scale-98"
+          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold tracking-tight shadow-xs transition active:scale-98"
         >
-          <Sparkles className="w-3 h-3" />
+          <Sparkles className="w-3.5 h-3.5" />
           <span>Upgrade →</span>
         </button>
       </div>
