@@ -50,11 +50,10 @@ export const PresentationSlides = () => {
           {/* Toggle Script */}
           <button
             onClick={() => setShowScript(!showScript)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
-              showScript
-                ? 'bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-            }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${showScript
+              ? 'bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+              }`}
           >
             <FileText className="w-3.5 h-3.5" />
             <span>{showScript ? 'Hide Speaker Notes' : 'Show Speaker Notes'}</span>
@@ -155,11 +154,10 @@ export const PresentationSlides = () => {
           <button
             key={idx}
             onClick={() => setCurrentSlideIdx(idx)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${
-              currentSlideIdx === idx
-                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100'
-            }`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${currentSlideIdx === idx
+              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100'
+              }`}
           >
             {slide.number}. {slide.title}
           </button>
