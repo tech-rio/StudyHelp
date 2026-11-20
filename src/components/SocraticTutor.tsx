@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { StudyPackage, ChatMessage } from '../types/study';
 import { askSocraticTutor } from '../services/gemini';
+import { recordTutorActivity } from '../services/studyAnalytics';
 
 interface SocraticTutorProps {
   deck: StudyPackage;
@@ -53,6 +54,7 @@ export const SocraticTutor: FC<SocraticTutorProps> = ({ deck }) => {
 
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
+    recordTutorActivity(deck.title);
     if (!overridePrompt) setInput('');
     setLoading(true);
 

@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { useState, useEffect, type FC } from 'react';
 import {
   FileText,
   Layers,
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 import { DEEP_LEARNING_DECK, OPERATING_SYSTEMS_DECK } from '../services/demoData';
+import { getComputedAnalytics, type RecentSession } from '../services/studyAnalytics';
 
 interface DashboardViewProps {
   onNavigate: (tab: any) => void;
@@ -31,6 +32,44 @@ export const DashboardView: FC<DashboardViewProps> = ({
   onSelectDeck,
   currentDeck: _currentDeck
 }) => {
+  const [timeframe, setTimeframe] = useState<'today' | 'week' | 'all'>('week');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [analytics, setAnalytics] = useState(() => getComputedAnalytics('week'));
+
+  useEffect(() => {
+    const update = () => {
+      setAnalytics(getComputedAnalytics(timeframe));
+    };
+
+    update();
+    window.addEventListener('cogni_study_analytics_updated', update);
+    return () => window.removeEventListener('cogni_study_analytics_updated', update);
+  }, [timeframe]);
+
+  const handleSessionClick = (session: RecentSession) => {
+    if (session.deckId === 'operating-systems' || session.deckTitle.toLowerCase().includes('concurrency')) {
+      onSelectDeck(OPERATING_SYSTEMS_DECK);
+    } else {
+      onSelectDeck(DEEP_LEARNING_DECK);
+    }
+
+    if (session.toolUsed === 'Flashcards') {
+      onNavigate('flashcards');
+    } else if (session.toolUsed === 'AI Tutor') {
+      onNavigate('tutor');
+    } else if (session.toolUsed === 'Mind Map') {
+      onNavigate('mindmap');
+    } else {
+      onNavigate('summary');
+    }
+  };
+
+  const timeframeLabels: Record<'today' | 'week' | 'all', string> = {
+    today: 'Today',
+    week: 'This Week',
+    all: 'All Time'
+  };
+
   return (
     <div className="space-y-8">
       {/* Hero Banner */}
@@ -200,7 +239,7 @@ export const DashboardView: FC<DashboardViewProps> = ({
               </div>
               <div>
                 <h2 className="text-base sm:text-lg font-bold tracking-tight text-stone-900 m-0">Recent Study Sessions</h2>
-                <p className="text-xs sm:text-sm text-stone-500 font-normal">Continue where you left off.</p>
+                <p className="text-xs sm:text-sm text-stone-500 font-normal">Live history of your recent study materials.</p>
               </div>
             </div>
             <button
@@ -213,83 +252,39 @@ export const DashboardView: FC<DashboardViewProps> = ({
           </div>
 
           <div className="space-y-3">
-            {/* Session 1 */}
-            <div
-              onClick={() => {
-                onSelectDeck(OPERATING_SYSTEMS_DECK);
-                onNavigate('summary');
-              }}
-              className="flex items-center justify-between p-4 sm:p-4.5 rounded-2xl border border-stone-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition cursor-pointer"
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                  <FileText className="w-5 h-5" />
+            {analytics.sessions.map((sess) => (
+              <div
+                key={sess.id}
+                onClick={() => handleSessionClick(sess)}
+                className="flex items-center justify-between p-4 sm:p-4.5 rounded-2xl border border-stone-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition cursor-pointer"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm sm:text-base font-bold tracking-tight text-stone-900">{sess.deckTitle}</h4>
+                    <p className="text-xs sm:text-sm text-stone-500 font-medium">
+                      {sess.type} · {sess.pageCount || 15} pages
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-sm sm:text-base font-bold tracking-tight text-stone-900">Operating Systems – Concurrency</h4>
-                  <p className="text-xs sm:text-sm text-stone-500 font-medium">PDF · 24 pages</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3.5">
-                <span className="text-xs font-bold tracking-wide uppercase px-3 py-1 rounded-full bg-cyan-100 text-cyan-800">
-                  Summary + Quiz
-                </span>
-                <span className="text-xs sm:text-sm text-stone-400 font-semibold font-sans">2h ago</span>
-                <MoreVertical className="w-4 h-4 text-stone-400" />
-              </div>
-            </div>
-
-            {/* Session 2 */}
-            <div
-              onClick={() => {
-                onSelectDeck(DEEP_LEARNING_DECK);
-                onNavigate('summary');
-              }}
-              className="flex items-center justify-between p-4 sm:p-4.5 rounded-2xl border border-stone-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition cursor-pointer"
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm sm:text-base font-bold tracking-tight text-stone-900">Deep Learning & Backpropagation</h4>
-                  <p className="text-xs sm:text-sm text-stone-500 font-medium">Notes · 12 pages</p>
+                <div className="flex items-center gap-3.5">
+                  <span className={`text-xs font-bold tracking-wide uppercase px-3 py-1 rounded-full ${
+                    sess.toolUsed === 'Summary + Quiz' ? 'bg-cyan-100 text-cyan-800' :
+                    sess.toolUsed === 'Flashcards' ? 'bg-sky-100 text-sky-800' :
+                    sess.toolUsed === 'AI Tutor' ? 'bg-teal-100 text-teal-800' :
+                    'bg-emerald-100 text-emerald-800'
+                  }`}>
+                    {sess.toolUsed}
+                  </span>
+                  <span className="text-xs sm:text-sm text-stone-400 font-semibold font-sans">
+                    {sess.relativeTime}
+                  </span>
+                  <MoreVertical className="w-4 h-4 text-stone-400" />
                 </div>
               </div>
-              <div className="flex items-center gap-3.5">
-                <span className="text-xs font-bold tracking-wide uppercase px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
-                  All Tools
-                </span>
-                <span className="text-xs sm:text-sm text-stone-400 font-semibold font-sans">Yesterday</span>
-                <MoreVertical className="w-4 h-4 text-stone-400" />
-              </div>
-            </div>
-
-            {/* Session 3 */}
-            <div
-              onClick={() => {
-                onSelectDeck(OPERATING_SYSTEMS_DECK);
-                onNavigate('flashcards');
-              }}
-              className="flex items-center justify-between p-4 sm:p-4.5 rounded-2xl border border-stone-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition cursor-pointer"
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm sm:text-base font-bold tracking-tight text-stone-900">Digital Electronics – Flip-Flops</h4>
-                  <p className="text-xs sm:text-sm text-stone-500 font-medium">PDF · 18 pages</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3.5">
-                <span className="text-xs font-bold tracking-wide uppercase px-3 py-1 rounded-full bg-sky-100 text-sky-800">
-                  Flashcards
-                </span>
-                <span className="text-xs sm:text-sm text-stone-400 font-semibold font-sans">2 days ago</span>
-                <MoreVertical className="w-4 h-4 text-stone-400" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -303,17 +298,42 @@ export const DashboardView: FC<DashboardViewProps> = ({
                 </div>
                 <div>
                   <h2 className="text-base sm:text-lg font-bold tracking-tight text-stone-900 m-0">Your Learning Progress</h2>
-                  <p className="text-xs sm:text-sm text-stone-500 font-normal">Track your study activity and improvement.</p>
+                  <p className="text-xs sm:text-sm text-stone-500 font-normal">Real-time study metrics & active effort.</p>
                 </div>
               </div>
-              <button className="flex items-center gap-1 text-xs font-semibold text-stone-600 px-3 py-1.5 rounded-lg border border-stone-200 bg-stone-50 hover:bg-stone-100">
-                <span>This Week</span>
-                <ChevronDown className="w-3.5 h-3.5 text-stone-400" />
-              </button>
+
+              {/* Timeframe selector dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-stone-700 px-3 py-1.5 rounded-lg border border-stone-200 bg-stone-50 hover:bg-stone-100 transition shadow-2xs"
+                >
+                  <span>{timeframeLabels[timeframe]}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-stone-400" />
+                </button>
+                {isFilterOpen && (
+                  <div className="absolute right-0 mt-1 w-32 bg-white border border-stone-200 rounded-xl shadow-lg p-1 z-30 animate-in fade-in duration-100">
+                    {(['today', 'week', 'all'] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => {
+                          setTimeframe(t);
+                          setIsFilterOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 text-xs rounded-lg font-medium transition ${
+                          timeframe === t ? 'bg-emerald-50 text-emerald-800 font-bold' : 'hover:bg-stone-50 text-stone-700'
+                        }`}
+                      >
+                        {timeframeLabels[t]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-6 py-3">
-              {/* Circular Donut Progress Ring */}
+              {/* Dynamic Circular Donut Progress Ring */}
               <div className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 flex items-center justify-center">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                   {/* Background Circle */}
@@ -324,10 +344,10 @@ export const DashboardView: FC<DashboardViewProps> = ({
                     fill="none"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
-                  {/* Progress Arc */}
+                  {/* Dynamic Progress Arc */}
                   <path
-                    className="text-cyan-500"
-                    strokeDasharray="76, 100"
+                    className="text-cyan-500 transition-all duration-700 ease-out"
+                    strokeDasharray={`${analytics.studyGoalPercent}, 100`}
                     strokeWidth="3.5"
                     strokeLinecap="round"
                     stroke="currentColor"
@@ -336,52 +356,54 @@ export const DashboardView: FC<DashboardViewProps> = ({
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center text-center">
-                  <span className="text-3xl sm:text-4xl font-black tracking-tight text-stone-900 leading-none">76%</span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-stone-400 mt-1.5">Study Goal</span>
+                  <span className="text-3xl sm:text-4xl font-black tracking-tight text-stone-900 leading-none">
+                    {analytics.studyGoalPercent}%
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-stone-400 mt-1.5">
+                    Study Goal
+                  </span>
                 </div>
               </div>
 
-              {/* 3 Metric Pills */}
+              {/* Dynamic 3 Metric Pills */}
               <div className="grid grid-cols-1 gap-2.5 flex-1">
                 <div className="flex items-center gap-2.5 text-stone-700">
                   <BookOpen className="w-4.5 h-4.5 text-emerald-600" />
-                  <span className="font-extrabold text-base sm:text-lg text-stone-900">6</span>
+                  <span className="font-extrabold text-base sm:text-lg text-stone-900">{analytics.uniqueTopics}</span>
                   <span className="text-stone-500 text-xs sm:text-sm font-medium">Topics</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-stone-700">
                   <Target className="w-4.5 h-4.5 text-cyan-600" />
-                  <span className="font-extrabold text-base sm:text-lg text-stone-900">128</span>
+                  <span className="font-extrabold text-base sm:text-lg text-stone-900">{analytics.totalQuestions}</span>
                   <span className="text-stone-500 text-xs sm:text-sm font-medium">Questions</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-stone-700">
                   <Flame className="w-4.5 h-4.5 text-amber-500" />
-                  <span className="font-extrabold text-base sm:text-lg text-stone-900">12</span>
+                  <span className="font-extrabold text-base sm:text-lg text-stone-900">{analytics.streak}</span>
                   <span className="text-stone-500 text-xs sm:text-sm font-medium">Day Streak</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Mini Weekly Bar Chart */}
+          {/* Dynamic Weekly Bar Chart based on real activities */}
           <div className="pt-4 border-t border-stone-100">
             <div className="flex items-end justify-between h-16 px-2">
-              {[
-                { day: 'Mon', h: '45%' },
-                { day: 'Tue', h: '65%' },
-                { day: 'Wed', h: '50%' },
-                { day: 'Thu', h: '95%' },
-                { day: 'Fri', h: '60%' },
-                { day: 'Sat', h: '75%' },
-                { day: 'Sun', h: '40%' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center gap-1.5">
-                  <div className="w-5 bg-emerald-100 rounded-full h-11 flex items-end overflow-hidden">
+              {analytics.weeklyChart.map((item, idx) => (
+                <div key={idx} className="flex flex-col items-center gap-1.5 group cursor-pointer" title={`${item.day}: ${item.count} study actions`}>
+                  <div className="w-5 bg-emerald-100 rounded-full h-11 flex items-end overflow-hidden group-hover:bg-emerald-200 transition">
                     <div
-                      style={{ height: item.h }}
-                      className="w-full bg-emerald-500 rounded-full transition-all duration-500"
+                      style={{ height: item.heightPct }}
+                      className={`w-full rounded-full transition-all duration-500 ${
+                        item.isToday ? 'bg-emerald-600 shadow-xs' : 'bg-emerald-500'
+                      }`}
                     />
                   </div>
-                  <span className="text-xs text-stone-400 font-semibold tracking-wide">{item.day}</span>
+                  <span className={`text-xs font-semibold tracking-wide ${
+                    item.isToday ? 'text-emerald-700 font-bold' : 'text-stone-400'
+                  }`}>
+                    {item.day}
+                  </span>
                 </div>
               ))}
             </div>

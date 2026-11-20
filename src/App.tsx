@@ -74,13 +74,18 @@ export function App() {
           )}
 
           {activeTab === 'flashcards' && (
-            <FlashcardDeck key={currentDeck.title} cards={currentDeck.flashcards} />
+            <FlashcardDeck
+              key={currentDeck.title}
+              cards={currentDeck.flashcards}
+              deckTitle={currentDeck.title}
+            />
           )}
 
           {activeTab === 'quiz' && (
             <QuizRunner
               key={currentDeck.title}
               questions={currentDeck.quiz}
+              deckTitle={currentDeck.title}
               onScoreUpdate={(score, total) => setQuizScore({ score, total })}
             />
           )}

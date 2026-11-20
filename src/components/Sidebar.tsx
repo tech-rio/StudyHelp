@@ -7,8 +7,8 @@ import {
   Trophy,
   GitFork,
   Folder,
-  Settings,
-  Sparkles
+  MonitorPlay,
+  CheckCircle2
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 
@@ -65,8 +65,8 @@ export const Sidebar: FC<SidebarProps> = ({
     },
     {
       id: 'presentation' as TabType,
-      label: 'Settings',
-      icon: Settings
+      label: 'Presentation',
+      icon: MonitorPlay
     }
   ];
 
@@ -125,28 +125,15 @@ export const Sidebar: FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Upgrade to Pro Card matching mockup */}
-      <div className="mt-6 p-5 rounded-2xl bg-linear-to-b from-[#dcfce7]/95 to-[#bbf7d0]/65 border border-emerald-200/70 shadow-xs space-y-3">
-        <div className="flex items-center gap-2 text-emerald-800">
-          <div className="w-8 h-8 rounded-xl bg-emerald-600/10 text-emerald-700 flex items-center justify-center font-bold text-sm">
-            🌱
-          </div>
+      {/* Clean Status Footer (Replacing Upgrade to Pro) */}
+      <div className="mt-8 p-4 rounded-2xl bg-white/70 border border-emerald-100 shadow-2xs space-y-2">
+        <div className="flex items-center gap-2 text-emerald-700">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">System Ready</span>
         </div>
-
-        <div>
-          <h4 className="text-sm font-bold tracking-tight text-stone-900 m-0">Upgrade to Pro</h4>
-          <p className="text-xs text-stone-600 mt-1 leading-normal font-normal">
-            Unlock unlimited notes, quizzes, and AI features.
-          </p>
-        </div>
-
-        <button
-          onClick={() => onTabChange('presentation')}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold tracking-tight shadow-xs transition active:scale-98"
-        >
-          <Sparkles className="w-4 h-4" />
-          <span>Upgrade →</span>
-        </button>
+        <p className="text-[11px] text-stone-500 leading-snug">
+          Offline demo mode active. All study tools & active recall ready.
+        </p>
       </div>
     </aside>
   );

@@ -8,12 +8,14 @@ import {
   Sparkles
 } from 'lucide-react';
 import type { Flashcard } from '../types/study';
+import { recordFlashcardActivity } from '../services/studyAnalytics';
 
 interface FlashcardDeckProps {
   cards: Flashcard[];
+  deckTitle?: string;
 }
 
-export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) => {
+export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards, deckTitle = 'Flashcards' }) => {
   const [cards, setCards] = useState<Flashcard[]>(initialCards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -71,6 +73,7 @@ export const FlashcardDeck: FC<FlashcardDeckProps> = ({ cards: initialCards }) =
     const updated = [...cards];
     updated[currentIndex] = { ...updated[currentIndex], mastery: rating };
     setCards(updated);
+    recordFlashcardActivity(deckTitle, rating);
     setTimeout(() => {
       handleNext();
     }, 200);

@@ -9,13 +9,15 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { QuizQuestion } from '../types/study';
+import { recordQuizActivity } from '../services/studyAnalytics';
 
 interface QuizRunnerProps {
   questions: QuizQuestion[];
+  deckTitle?: string;
   onScoreUpdate?: (score: number, total: number) => void;
 }
 
-export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) => {
+export const QuizRunner: FC<QuizRunnerProps> = ({ questions, deckTitle = 'Practice Quiz', onScoreUpdate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -62,6 +64,7 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
     if (onScoreUpdate) {
       onScoreUpdate(currentScore, questions.length);
     }
+    recordQuizActivity(deckTitle, currentScore, questions.length);
   };
 
   const handleNext = () => {

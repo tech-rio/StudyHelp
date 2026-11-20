@@ -11,6 +11,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
+import { recordSummaryActivity } from '../services/studyAnalytics';
 
 interface SummaryViewProps {
   deck: StudyPackage;
@@ -23,12 +24,13 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
+    recordSummaryActivity(deck.title);
     return () => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     };
-  }, []);
+  }, [deck.title]);
 
   const handleAudioOverview = () => {
     if (!('speechSynthesis' in window)) {
