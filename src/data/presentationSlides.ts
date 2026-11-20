@@ -82,48 +82,48 @@ export const PRESENTATION_SLIDES: Slide[] = [
   {
     number: 4,
     title: "Architecture & Implementation",
-    subtitle: "How It Works Under the Hood",
+    subtitle: "Client-Server Architecture with AI & Voice Services",
     badge: "Architecture",
     timing: "2:15 - 3:00 (45s)",
     points: [
       {
-        title: "1. Ingestion Layer",
-        desc: "PDF text is parsed locally in the browser using PDF.js with zero server roundtrips and complete privacy."
+        title: "1. Dedicated Express & TypeScript Backend",
+        desc: "Secure Node.js server managing API routing, environment configuration (.env), rate limiting, and model proxies."
       },
       {
-        title: "2. Analysis & Extraction",
-        desc: "Structured prompt pipeline using Google Gemini API to extract key definitions, formulas, flashcards, and quiz items."
+        title: "2. Multi-Modal AI & ElevenLabs Voice Pipeline",
+        desc: "Grounded Google Gemini pipelines for extraction and Socratic tutoring, paired with ElevenLabs neural text-to-speech."
       },
       {
-        title: "3. Interactive Frontend",
-        desc: "Built with React 19, TypeScript, and Tailwind CSS. Features tactile 3D flashcards and browser-native text-to-speech."
+        title: "3. Interactive Frontend & Local Ingestion",
+        desc: "Built with React 19, Vite, and Tailwind CSS v4. Features client PDF extraction, 3D flashcards, and live study analytics."
       }
     ],
-    highlightBox: "Runs fast in the browser and includes offline sample decks so it works anywhere without failing.",
-    speakerScript: "Technically, the architecture has three clean parts: First, documents are parsed locally using PDF.js. Second, the text is processed through our structured extraction prompts to produce validated study items. Third, our React frontend renders interactive components — from 3D card flips to text-to-speech audio overviews."
+    highlightBox: "Clean separation of concerns: API keys and models reside securely on the backend, serving a responsive client.",
+    speakerScript: "Technically, the architecture is divided into two distinct layers: a secure Node.js Express backend and a modern React 19 frontend. The backend encapsulates our Google Gemini pipelines and ElevenLabs neural voice synthesis, keeping API credentials safely stored in environment variables. The frontend delivers instant feedback with local PDF parsing and live study analytics."
   },
   {
     number: 5,
     title: "Technologies Used",
-    subtitle: "Tools and Libraries",
+    subtitle: "Full-Stack AI Engineering",
     badge: "Tech Stack",
     timing: "3:00 - 3:45 (45s)",
     points: [
       {
-        title: "AI Model",
-        desc: "Google Gemini API (gemini-2.0-flash / gemini-1.5-flash) for extraction, structured reasoning, and tutoring."
+        title: "Backend & Voice APIs",
+        desc: "Node.js, Express, TypeScript, dotenv, and ElevenLabs API for natural human-like voice synthesis."
       },
       {
-        title: "Frontend Stack",
-        desc: "React 19, TypeScript, Vite, Tailwind CSS, and Lucide icons for a clean, fast light interface."
+        title: "AI & Reasoning Models",
+        desc: "Google Gemini 2.0 Flash / 1.5 Flash for structured academic reasoning, question generation, and Socratic tutoring."
       },
       {
-        title: "Document & Speech APIs",
-        desc: "PDF.js for client-side document reading, plus the HTML5 Web Speech API for listening to study summaries aloud."
+        title: "Frontend & Parsing",
+        desc: "React 19, TypeScript, Vite, Tailwind CSS v4, Lucide icons, Canvas Confetti, and PDF.js."
       }
     ],
-    highlightBox: "Simple, lightweight stack chosen for responsiveness and reliability.",
-    speakerScript: "For the tech stack: I used Google Gemini as the core model for extraction and conversational tutoring. The application is built with React 19, TypeScript, and Tailwind CSS for a clean, distraction-free interface. We also use PDF.js for parsing and Web Speech API for audio narration."
+    highlightBox: "Modern full-stack setup combining dedicated backend services with client-side reactivity.",
+    speakerScript: "For the tech stack: On the backend, we run an Express TypeScript server managing our AI pipelines and streaming ElevenLabs neural voice audio. On the AI side, we leverage Google Gemini for structured material generation and pedagogical tutoring. The frontend is powered by React 19, Vite, and Tailwind CSS v4."
   },
   {
     number: 6,

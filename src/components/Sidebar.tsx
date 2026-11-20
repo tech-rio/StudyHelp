@@ -7,12 +7,13 @@ import {
   Trophy,
   GitFork,
   Folder,
+  Settings,
   MonitorPlay,
   CheckCircle2
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 
-export type TabType = 'dashboard' | 'workspace' | 'summary' | 'flashcards' | 'quiz' | 'mindmap' | 'tutor' | 'presentation';
+export type TabType = 'dashboard' | 'workspace' | 'summary' | 'flashcards' | 'quiz' | 'mindmap' | 'tutor' | 'settings' | 'presentation';
 
 interface SidebarProps {
   activeTab: TabType;
@@ -62,6 +63,11 @@ export const Sidebar: FC<SidebarProps> = ({
       id: 'summary' as TabType,
       label: 'Library',
       icon: Folder
+    },
+    {
+      id: 'settings' as TabType,
+      label: 'Settings',
+      icon: Settings
     },
     {
       id: 'presentation' as TabType,

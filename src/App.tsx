@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { StudyPackage } from './types/study';
-import { DEEP_LEARNING_DECK } from './services/demoData';
-import { hasApiKey } from './services/gemini';
+import { DEEP_LEARNING_DECK, OPERATING_SYSTEMS_DECK } from './services/demoData';
 import { Header } from './components/Header';
 import { Sidebar, type TabType } from './components/Sidebar';
 import { DashboardView } from './components/DashboardView';
@@ -12,22 +11,23 @@ import { QuizRunner } from './components/QuizRunner';
 import { MindMapView } from './components/MindMapView';
 import { SocraticTutor } from './components/SocraticTutor';
 import { PresentationSlides } from './components/PresentationSlides';
-import { ApiKeyModal } from './components/ApiKeyModal';
+import { SettingsView } from './components/SettingsView';
 
 export function App() {
+  const [decks, setDecks] = useState<StudyPackage[]>([DEEP_LEARNING_DECK, OPERATING_SYSTEMS_DECK]);
   const [currentDeck, setCurrentDeck] = useState<StudyPackage>(DEEP_LEARNING_DECK);
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null);
-  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
-  const [keyConfigured, setKeyConfigured] = useState(() => hasApiKey());
 
   const handleStudyPackageGenerated = (pkg: StudyPackage) => {
+    setDecks(prev => [pkg, ...prev.filter(d => d.title !== pkg.title)]);
     setCurrentDeck(pkg);
     setQuizScore(null);
     setActiveTab('summary');
   };
 
   const handleSelectSampleDeck = (deck: StudyPackage) => {
+    setDecks(prev => prev.some(d => d.title === deck.title) ? prev : [deck, ...prev]);
     setCurrentDeck(deck);
     setQuizScore(null);
   };
@@ -47,9 +47,9 @@ export function App() {
         {/* Top Header */}
         <Header
           currentDeck={currentDeck}
+          decks={decks}
           onSelectDeck={handleSelectSampleDeck}
-          hasKey={keyConfigured}
-          onOpenKeyModal={() => setIsKeyModalOpen(true)}
+          onNewSession={() => setActiveTab('workspace')}
         />
 
         {/* Dynamic Content Viewport */}
@@ -98,18 +98,15 @@ export function App() {
             <SocraticTutor key={currentDeck.title} deck={currentDeck} />
           )}
 
+          {activeTab === 'settings' && (
+            <SettingsView />
+          )}
+
           {activeTab === 'presentation' && (
             <PresentationSlides />
           )}
         </main>
       </div>
-
-      {/* API Key Modal */}
-      <ApiKeyModal
-        isOpen={isKeyModalOpen}
-        onClose={() => setIsKeyModalOpen(false)}
-        onKeySaved={() => setKeyConfigured(hasApiKey())}
-      />
     </div>
   );
 }

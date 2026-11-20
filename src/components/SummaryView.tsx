@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC } from 'react';
+import { useState, useEffect, useRef, type FC } from 'react';
 import {
   Volume2,
   VolumeX,
@@ -8,10 +8,12 @@ import {
   Check,
   Tag,
   Code2,
-  Sparkles
+  Sparkles,
+  Loader2
 } from 'lucide-react';
 import type { StudyPackage } from '../types/study';
 import { recordSummaryActivity } from '../services/studyAnalytics';
+import { fetchElevenLabsAudio } from '../services/gemini';
 
 interface SummaryViewProps {
   deck: StudyPackage;
@@ -21,38 +23,104 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
   const [isPlainEnglish, setIsPlainEnglish] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [audioSource, setAudioSource] = useState<'elevenlabs' | 'webspeech' | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const activeAudioElementRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     recordSummaryActivity(deck.title);
     return () => {
+      if (activeAudioElementRef.current) {
+        activeAudioElementRef.current.pause();
+        activeAudioElementRef.current = null;
+      }
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     };
   }, [deck.title]);
 
-  const handleAudioOverview = () => {
+  const handleAudioOverview = async () => {
+    // If currently playing ElevenLabs audio, toggle pause/play
+    if (activeAudioElementRef.current && audioSource === 'elevenlabs') {
+      if (isPlayingAudio && !isAudioPaused) {
+        activeAudioElementRef.current.pause();
+        setIsAudioPaused(true);
+        return;
+      }
+      if (isAudioPaused) {
+        activeAudioElementRef.current.play();
+        setIsAudioPaused(false);
+        return;
+      }
+    }
+
+    // If currently playing Web Speech API, toggle pause/resume
+    if (audioSource === 'webspeech' && 'speechSynthesis' in window) {
+      if (isPlayingAudio && !isAudioPaused) {
+        window.speechSynthesis.pause();
+        setIsAudioPaused(true);
+        return;
+      }
+      if (isAudioPaused) {
+        window.speechSynthesis.resume();
+        setIsAudioPaused(false);
+        return;
+      }
+    }
+
+    // Stop any existing playback before starting fresh
+    handleStopAudio();
+
+    const narrationText = `Summary for ${deck.title}. ${isPlainEnglish ? deck.overviewEli5 : deck.overview}. Key points: ${deck.keyPoints.map(kp => `${kp.topic}: ${isPlainEnglish ? kp.eli5 : kp.summary}`).join('. ')}`;
+
+    setIsLoadingAudio(true);
+
+    try {
+      // 1. Try ElevenLabs voice synthesis via backend
+      const elevenAudio = await fetchElevenLabsAudio(narrationText);
+
+      if (elevenAudio) {
+        activeAudioElementRef.current = elevenAudio;
+        setAudioSource('elevenlabs');
+        setIsLoadingAudio(false);
+        setIsPlayingAudio(true);
+        setIsAudioPaused(false);
+
+        elevenAudio.onended = () => {
+          setIsPlayingAudio(false);
+          setIsAudioPaused(false);
+          activeAudioElementRef.current = null;
+        };
+
+        elevenAudio.onerror = () => {
+          console.warn("ElevenLabs audio playback failed, falling back to Web Speech");
+          fallbackToWebSpeech(narrationText);
+        };
+
+        await elevenAudio.play();
+        return;
+      }
+    } catch (err) {
+      console.warn("ElevenLabs error, using fallback voice", err);
+    }
+
+    // 2. Seamless local Web Speech API fallback
+    fallbackToWebSpeech(narrationText);
+  };
+
+  const fallbackToWebSpeech = (text: string) => {
+    setIsLoadingAudio(false);
     if (!('speechSynthesis' in window)) {
       alert("Text-to-speech is not supported by your browser.");
       return;
     }
 
-    if (isPlayingAudio && !isAudioPaused) {
-      window.speechSynthesis.pause();
-      setIsAudioPaused(true);
-      return;
-    }
-
-    if (isAudioPaused) {
-      window.speechSynthesis.resume();
-      setIsAudioPaused(false);
-      return;
-    }
-
+    setAudioSource('webspeech');
     window.speechSynthesis.cancel();
-    const narrationText = `Summary for ${deck.title}. ${isPlainEnglish ? deck.overviewEli5 : deck.overview}. Key points: ${deck.keyPoints.map(kp => `${kp.topic}: ${isPlainEnglish ? kp.eli5 : kp.summary}`).join('. ')}`;
-    const utterance = new SpeechSynthesisUtterance(narrationText);
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.95;
 
     utterance.onstart = () => {
@@ -74,11 +142,17 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
   };
 
   const handleStopAudio = () => {
+    if (activeAudioElementRef.current) {
+      activeAudioElementRef.current.pause();
+      activeAudioElementRef.current.currentTime = 0;
+      activeAudioElementRef.current = null;
+    }
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      setIsPlayingAudio(false);
-      setIsAudioPaused(false);
     }
+    setIsPlayingAudio(false);
+    setIsAudioPaused(false);
+    setIsLoadingAudio(false);
   };
 
   const handleCopyCode = (id: string, text: string) => {
@@ -112,25 +186,30 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
           {/* Plain English Toggle */}
           <button
             onClick={() => setIsPlainEnglish(!isPlainEnglish)}
-            className={`px-5 py-2.5 rounded-full text-sm font-bold border transition-all shadow-xs ${
-              isPlainEnglish
+            className={`px-5 py-2.5 rounded-full text-sm font-bold border transition-all shadow-xs ${isPlainEnglish
                 ? 'bg-amber-100 text-amber-900 border-amber-300'
                 : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
-            }`}
+              }`}
           >
             {isPlainEnglish ? "Plain English: ON" : "Plain English Mode"}
           </button>
 
-          {/* Audio Player Button */}
+          {/* Audio Player Button (ElevenLabs Voice Powered) */}
           <div className="flex items-center rounded-full border border-emerald-200 bg-emerald-50/70 p-1 shadow-xs">
             <button
               onClick={handleAudioOverview}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-100/80 rounded-full transition"
+              disabled={isLoadingAudio}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-100/80 rounded-full transition disabled:opacity-60"
             >
-              {isPlayingAudio && !isAudioPaused ? (
+              {isLoadingAudio ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-700" />
+                  <span>Synthesizing Voice...</span>
+                </>
+              ) : isPlayingAudio && !isAudioPaused ? (
                 <>
                   <Pause className="w-4 h-4" />
-                  <span>Pause</span>
+                  <span>Pause Voice</span>
                 </>
               ) : isAudioPaused ? (
                 <>
@@ -140,7 +219,12 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
               ) : (
                 <>
                   <Volume2 className="w-4 h-4 text-emerald-700" />
-                  <span>Audio Overview</span>
+                  <span>Voice Overview</span>
+                  {audioSource === 'elevenlabs' && (
+                    <span className="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.5 rounded font-mono font-bold">
+                      ElevenLabs
+                    </span>
+                  )}
                 </>
               )}
             </button>
@@ -158,11 +242,10 @@ export const SummaryView: FC<SummaryViewProps> = ({ deck }) => {
       </div>
 
       {/* Main Overview Box */}
-      <div className={`p-7 sm:p-9 rounded-3xl border transition-colors shadow-xs ${
-        isPlainEnglish
+      <div className={`p-7 sm:p-9 rounded-3xl border transition-colors shadow-xs ${isPlainEnglish
           ? 'bg-amber-50/80 border-amber-200'
           : 'bg-white border-stone-200/90'
-      }`}>
+        }`}>
         <div className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-800 mb-3">
           <Sparkles className="w-4.5 h-4.5 text-emerald-600" />
           <span>{isPlainEnglish ? "Plain English Explanation" : "Core Academic Overview"}</span>

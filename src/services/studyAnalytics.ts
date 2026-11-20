@@ -340,3 +340,15 @@ export function getComputedAnalytics(timeframe: 'today' | 'week' | 'all') {
     sessions: sessionsWithRelativeTime
   };
 }
+
+/**
+ * Resets local storage analytics back to fresh initial baseline state
+ */
+export function resetAnalyticsToBaseline(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    window.dispatchEvent(new Event('cogni_study_analytics_updated'));
+  } catch {
+    // ignore
+  }
+}

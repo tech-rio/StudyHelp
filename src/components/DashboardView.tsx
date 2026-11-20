@@ -111,11 +111,15 @@ export const DashboardView: FC<DashboardViewProps> = ({
         </div>
 
         {/* Right side cozy study desk illustration */}
-        <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[45%] overflow-hidden pointer-events-none">
+        <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[46%] overflow-hidden pointer-events-none">
           <img
             src="/study-desk.png"
             alt="Study Desk"
-            className="w-full h-full object-cover object-left mask-[linear-gradient(to_right,transparent,black_25%)]"
+            style={{
+              maskImage: 'linear-gradient(to right, transparent, black 22%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 22%)'
+            }}
+            className="w-full h-full object-cover object-left"
           />
         </div>
       </div>
@@ -239,7 +243,7 @@ export const DashboardView: FC<DashboardViewProps> = ({
               </div>
               <div>
                 <h2 className="text-base sm:text-lg font-bold tracking-tight text-stone-900 m-0">Recent Study Sessions</h2>
-                <p className="text-xs sm:text-sm text-stone-500 font-normal">Live history of your recent study materials.</p>
+                <p className="text-xs sm:text-sm text-stone-500 font-normal">Continue where you left off.</p>
               </div>
             </div>
             <button
@@ -298,7 +302,7 @@ export const DashboardView: FC<DashboardViewProps> = ({
                 </div>
                 <div>
                   <h2 className="text-base sm:text-lg font-bold tracking-tight text-stone-900 m-0">Your Learning Progress</h2>
-                  <p className="text-xs sm:text-sm text-stone-500 font-normal">Real-time study metrics & active effort.</p>
+                  <p className="text-xs sm:text-sm text-stone-500 font-normal">Track your study activity and improvement.</p>
                 </div>
               </div>
 
