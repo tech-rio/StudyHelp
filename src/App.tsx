@@ -53,7 +53,7 @@ export function App() {
         />
 
         {/* Dynamic Content Viewport */}
-        <main className="flex-1 px-6 py-4 overflow-y-auto max-w-7xl w-full mx-auto">
+        <main className="flex-1 px-6 sm:px-8 py-8 overflow-y-auto max-w-7xl w-full mx-auto">
           {activeTab === 'dashboard' && (
             <DashboardView
               onNavigate={(tab) => setActiveTab(tab)}

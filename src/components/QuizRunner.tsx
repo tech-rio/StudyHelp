@@ -1,13 +1,13 @@
 import { useState, type FC } from 'react';
-import confetti from 'canvas-confetti';
 import {
   CheckCircle2,
   XCircle,
   RotateCcw,
+  Trophy,
   ArrowRight,
-  HelpCircle,
-  Trophy
+  HelpCircle
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import type { QuizQuestion } from '../types/study';
 
 interface QuizRunnerProps {
@@ -17,61 +17,76 @@ interface QuizRunnerProps {
 
 export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [qIndex: number]: number }>({});
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [isCompleted, setIsCompleted] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   if (!questions || questions.length === 0) {
     return (
-      <div className="text-center py-12 text-stone-500 text-sm">
-        No quiz questions available yet.
+      <div className="text-center py-16 text-stone-500 text-base">
+        No quiz questions found in this study deck.
       </div>
     );
   }
 
-  const currentQ = questions[currentIndex];
-  const selectedOption = selectedAnswers[currentIndex];
-  const isAnswered = selectedOption !== undefined;
+  const currentQ = questions[currentIndex] || questions[0];
 
-  const handleSelectOption = (optIndex: number) => {
+  const handleSelectOption = (idx: number) => {
     if (isAnswered) return;
-
-    const updatedAnswers = { ...selectedAnswers, [currentIndex]: optIndex };
-    setSelectedAnswers(updatedAnswers);
+    setSelectedOption(idx);
+    setIsAnswered(true);
     setShowExplanation(true);
 
-    const totalAnswered = Object.keys(updatedAnswers).length;
-    if (totalAnswered === questions.length) {
-      let finalScore = 0;
-      questions.forEach((q, idx) => {
-        if (updatedAnswers[idx] === q.correctIndex) {
-          finalScore++;
-        }
+    const updatedAnswers = { ...selectedAnswers, [currentIndex]: idx };
+    setSelectedAnswers(updatedAnswers);
+
+    const isCorrect = idx === currentQ.correctIndex;
+    if (isCorrect) {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ['#22c55e', '#10b981', '#14b8a6', '#84cc16']
       });
-      if (onScoreUpdate) {
-        onScoreUpdate(finalScore, questions.length);
+    }
+
+    let currentScore = 0;
+    questions.forEach((q, qIdx) => {
+      if (updatedAnswers[qIdx] === q.correctIndex) {
+        currentScore++;
       }
+    });
+
+    if (onScoreUpdate) {
+      onScoreUpdate(currentScore, questions.length);
     }
   };
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((prev) => prev + 1);
+      setSelectedOption(selectedAnswers[currentIndex + 1] ?? null);
+      setIsAnswered(selectedAnswers[currentIndex + 1] !== undefined);
       setShowExplanation(selectedAnswers[currentIndex + 1] !== undefined);
     } else {
       setIsCompleted(true);
       confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.6 }
+        particleCount: 120,
+        spread: 90,
+        origin: { y: 0.6 },
+        colors: ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899']
       });
     }
   };
 
   const handleRetake = () => {
     setSelectedAnswers({});
-    setCurrentIndex(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
     setShowExplanation(false);
+    setCurrentIndex(0);
     setIsCompleted(false);
     if (onScoreUpdate) {
       onScoreUpdate(0, questions.length);
@@ -88,40 +103,40 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
 
   if (isCompleted) {
     return (
-      <div className="max-w-xl mx-auto bg-white border border-stone-200/90 rounded-3xl p-8 sm:p-10 text-center shadow-xs space-y-6">
-        <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs">
-          <Trophy className="w-8 h-8" />
+      <div className="max-w-2xl mx-auto bg-white border border-stone-200/90 rounded-3xl p-10 sm:p-12 text-center shadow-xs space-y-7">
+        <div className="w-20 h-20 mx-auto rounded-3xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs">
+          <Trophy className="w-10 h-10" />
         </div>
 
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+          <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-700">
             Quiz Assessment Completed
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1.5">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-stone-900 mt-2">
             {scorePercent >= 80 ? 'Mastery Level Achieved! 🎉' : scorePercent >= 60 ? 'Good Effort! Keep Reviewing' : 'Review Recommended'}
           </h2>
-          <p className="text-sm text-stone-600 mt-1">
+          <p className="text-base text-stone-600 mt-2">
             You scored {correctCount} out of {questions.length} questions ({scorePercent}%)
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 py-2 text-left">
-          <div className="p-4 rounded-2xl bg-[#f0faf4] border border-emerald-100">
-            <span className="text-xs text-stone-500 font-semibold">Correct Answers</span>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-0.5">{correctCount} / {questions.length}</p>
+        <div className="grid grid-cols-2 gap-4 py-3 text-left">
+          <div className="p-5 rounded-2xl bg-[#f0faf4] border border-emerald-100">
+            <span className="text-xs sm:text-sm text-stone-500 font-semibold">Correct Answers</span>
+            <p className="text-3xl font-extrabold text-emerald-800 mt-1">{correctCount} / {questions.length}</p>
           </div>
-          <div className="p-4 rounded-2xl bg-[#f0faf4] border border-emerald-100">
-            <span className="text-xs text-stone-500 font-semibold">Mastery Score</span>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-0.5">{scorePercent}%</p>
+          <div className="p-5 rounded-2xl bg-[#f0faf4] border border-emerald-100">
+            <span className="text-xs sm:text-sm text-stone-500 font-semibold">Mastery Score</span>
+            <p className="text-3xl font-extrabold text-emerald-800 mt-1">{scorePercent}%</p>
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-3 pt-2">
+        <div className="flex items-center justify-center gap-4 pt-2">
           <button
             onClick={handleRetake}
-            className="flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition"
+            className="flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base shadow-sm shadow-emerald-600/20 transition active:scale-98"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-5 h-5" />
             <span>Retake Practice Quiz</span>
           </button>
         </div>
@@ -130,24 +145,24 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-8">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
+          <span className="text-xs sm:text-sm font-bold text-emerald-700 uppercase tracking-wider">
             Adaptive Knowledge Check
           </span>
-          <h2 className="text-xl font-bold text-stone-900 mt-0.5">
+          <h2 className="text-2xl font-extrabold text-stone-900 mt-1 tracking-tight">
             Question {currentIndex + 1} of {questions.length}
           </h2>
         </div>
-        <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+        <div className="text-sm font-mono font-bold px-4 py-2 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
           Score: {correctCount} / {Object.keys(selectedAnswers).length}
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-stone-200 h-2 rounded-full overflow-hidden shadow-inner">
+      <div className="w-full bg-stone-200 h-3 rounded-full overflow-hidden shadow-inner">
         <div
           style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
           className="bg-emerald-600 h-full transition-all duration-300"
@@ -155,13 +170,13 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
       </div>
 
       {/* Question Card */}
-      <div className="bg-white border border-stone-200/90 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
-        <p className="text-lg font-bold text-stone-900 leading-snug">
+      <div className="bg-white border border-stone-200/90 rounded-3xl p-7 sm:p-10 shadow-xs space-y-7">
+        <p className="text-xl sm:text-2xl font-bold text-stone-900 leading-snug tracking-tight">
           {currentQ.question}
         </p>
 
         {/* Options */}
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {currentQ.options.map((option, optIdx) => {
             const isSelected = selectedOption === optIdx;
             const isCorrect = optIdx === currentQ.correctIndex;
@@ -183,10 +198,10 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
                 key={optIdx}
                 onClick={() => handleSelectOption(optIdx)}
                 disabled={isAnswered}
-                className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-150 flex items-center justify-between text-xs sm:text-sm ${buttonStyle}`}
+                className={`w-full text-left p-5 sm:p-5.5 rounded-2xl border-2 transition-all duration-150 flex items-center justify-between text-sm sm:text-base ${buttonStyle}`}
               >
-                <div className="flex items-center gap-3">
-                  <span className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
+                <div className="flex items-center gap-3.5">
+                  <span className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${
                     isAnswered && isCorrect
                       ? 'bg-emerald-600 text-white'
                       : isAnswered && isSelected
@@ -199,10 +214,10 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
                 </div>
 
                 {isAnswered && isCorrect && (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
                 )}
                 {isAnswered && isSelected && !isCorrect && (
-                  <XCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                  <XCircle className="w-6 h-6 text-rose-600 shrink-0" />
                 )}
               </button>
             );
@@ -211,16 +226,16 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
 
         {/* Explanation Card */}
         {showExplanation && (
-          <div className="p-4 rounded-2xl bg-[#f0faf4] border border-emerald-200/80 text-xs text-stone-800 space-y-2 animate-in fade-in duration-200">
-            <div className="flex items-center gap-1.5 font-bold text-emerald-900">
-              <HelpCircle className="w-4 h-4 text-emerald-700" />
+          <div className="p-5 rounded-2xl bg-[#f0faf4] border border-emerald-200/80 text-sm sm:text-base text-stone-800 space-y-2.5 animate-in fade-in duration-200">
+            <div className="flex items-center gap-2 font-bold text-emerald-900">
+              <HelpCircle className="w-5 h-5 text-emerald-700" />
               <span>Explanation & Rationale</span>
             </div>
             <p className="leading-relaxed">
               {currentQ.explanation}
             </p>
             {currentQ.tip && (
-              <div className="pt-2 border-t border-emerald-100 text-stone-600 text-[11px]">
+              <div className="pt-2.5 border-t border-emerald-100 text-stone-600 text-xs sm:text-sm">
                 <strong className="text-emerald-900">Exam Note:</strong> {currentQ.tip}
               </div>
             )}
@@ -229,13 +244,13 @@ export const QuizRunner: FC<QuizRunnerProps> = ({ questions, onScoreUpdate }) =>
 
         {/* Next Question Button */}
         {isAnswered && (
-          <div className="flex items-center justify-end pt-1">
+          <div className="flex items-center justify-end pt-2">
             <button
               onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition active:scale-98"
+              className="flex items-center gap-2.5 px-7 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base shadow-sm shadow-emerald-600/20 transition active:scale-98"
             >
               <span>{currentIndex < questions.length - 1 ? 'Next Question' : 'View Results'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </button>
           </div>
         )}
