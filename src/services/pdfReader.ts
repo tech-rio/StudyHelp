@@ -19,8 +19,12 @@ export async function extractTextFromPdf(file: File): Promise<string> {
       const textContent = await page.getTextContent();
       const pageText = (textContent.items as Array<{ str?: string }>)
         .map((item) => item.str || '')
-        .join(' ');
-      fullText += `--- Page ${pageNum} ---\n${pageText}\n\n`;
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (pageText) {
+        fullText += `${pageText}\n\n`;
+      }
     }
 
     return fullText.trim();
