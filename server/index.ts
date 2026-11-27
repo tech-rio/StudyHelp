@@ -344,7 +344,7 @@ const distPath = path.resolve(__dirname, '../dist');
 app.use(express.static(distPath));
 
 // SPA wildcard fallback
-app.get('*', (req: Request, res: Response) => {
+app.get('{*splat}', (req: Request, res: Response) => {
   if (req.path.startsWith('/api')) {
     res.status(404).json({ error: `API endpoint not found: ${req.path}` });
     return;
