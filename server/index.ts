@@ -339,6 +339,19 @@ function getSimulatedTutorReply(studyPackage: any, message: string, mode: string
   return `### Concept Breakdown: ${conceptTopic}\n\n1. **Core Principle**: ${conceptSummary}\n2. **Intuitive Model**: ${matchingKeyPoint?.eli5 || studyPackage?.overviewEli5 || 'Understanding this core concept makes exam derivation direct.'}\n3. **Key Formulation / Note**: ${matchingKeyPoint?.formulasOrSyntax?.[0] ? `\`${matchingKeyPoint.formulasOrSyntax[0]}\`` : (matchingCard?.back || 'Always verify boundary conditions in your written answer.')}\n\nWhat specific part of this concept would you like to explore deeper?`;
 }
 
+// Serve client build (SPA) in production
+const distPath = path.resolve(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// SPA wildcard fallback
+app.get('*', (req: Request, res: Response) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ error: `API endpoint not found: ${req.path}` });
+    return;
+  }
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`[CogniStudy Server] Backend running on http://localhost:${PORT}`);
