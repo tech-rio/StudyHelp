@@ -1,6 +1,8 @@
 # 🎓 CogniStudy AI — Autonomous Adaptive Study & Exam Intelligence Agent
 
-An end-to-end, production-ready AI study assistant application built with **React 19, TypeScript, Vite, Tailwind CSS, Google Gemini API, and PDF.js**. Designed for student academic mastery and high-yield presentation evaluation.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/tech-rio/StudyHelp)
+
+An end-to-end, full-stack AI study assistant application built with **React 19, Express 5, TypeScript, Vite, Tailwind CSS, Google Gemini API, ElevenLabs Neural Voice, and PDF.js**. Designed for student academic mastery and high-yield presentation evaluation.
 
 ---
 
