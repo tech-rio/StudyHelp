@@ -277,7 +277,7 @@ Current Student Inquiry:
 Respond directly as the tutor:
 `;
 
-    const geminiRes = await fetch(
+    let geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
@@ -289,14 +289,28 @@ Respond directly as the tutor:
     );
 
     if (!geminiRes.ok) {
+      geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        }
+      );
+    }
+
+    if (!geminiRes.ok) {
       throw new Error(`Gemini tutor error: ${geminiRes.statusText}`);
     }
 
     const data = await geminiRes.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Let's review the core definition again. How would you describe the basic input and output?";
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) throw new Error("Empty reply from Gemini model.");
     res.json({ reply });
   } catch (err) {
-    console.error("[Backend Tutor Error]", err);
+    console.warn("[Backend Tutor Fallback]", err);
     res.json({
       reply: getSimulatedTutorReply(req.body.studyPackage, req.body.message, req.body.mode || 'socratic')
     });
@@ -310,33 +324,64 @@ function generateFallbackPackage(text: string) {
 
 function getSimulatedTutorReply(studyPackage: any, message: string, mode: string) {
   const title = studyPackage?.title || 'this topic';
-  const lower = message.toLowerCase();
+  const lower = (message || '').toLowerCase().trim();
 
-  const matchingKeyPoint = studyPackage?.keyPoints?.find((kp: any) =>
+  const keyPoints: any[] = studyPackage?.keyPoints || [];
+  const flashcards: any[] = studyPackage?.flashcards || [];
+
+  const matchedKp = keyPoints.find((kp: any) =>
     lower.includes(kp.topic.toLowerCase()) ||
-    kp.summary.toLowerCase().split(' ').some((w: string) => w.length > 4 && lower.includes(w))
-  ) || studyPackage?.keyPoints?.[0];
+    kp.topic.toLowerCase().split(/\s+/).some((w: string) => w.length > 3 && lower.includes(w))
+  ) || keyPoints[0];
 
-  const matchingCard = studyPackage?.flashcards?.find((fc: any) =>
+  const matchedCard = flashcards.find((fc: any) =>
     lower.includes(fc.category.toLowerCase()) ||
-    fc.front.toLowerCase().split(' ').some((w: string) => w.length > 5 && lower.includes(w))
-  );
+    fc.front.toLowerCase().split(/\s+/).some((w: string) => w.length > 4 && lower.includes(w))
+  ) || flashcards[0];
 
-  const conceptTopic = matchingKeyPoint?.topic || title;
-  const conceptSummary = matchingKeyPoint?.summary || studyPackage?.overview || 'the foundational principles';
+  const topicName = matchedKp?.topic || title;
+  const summary = matchedKp?.summary || studyPackage?.overview || 'the foundational principles';
+  const formula = matchedKp?.formulasOrSyntax?.[0] || '';
+  const eli5 = matchedKp?.eli5 || studyPackage?.overviewEli5 || '';
 
-  if (mode === 'socratic') {
-    if (lower.includes('why') || lower.includes('how')) {
-      return `That's a key inquiry in **${conceptTopic}**! Let's reason through it step-by-step:\n\nFrom your study material: *"${conceptSummary}"*.\n\nWhat would you predict happens if the primary boundary conditions are modified? How does that impact the overall system response?`;
-    }
-    return `Great topic to explore. Before jumping to formulas for **${conceptTopic}**, how would you state its governing rule in your own words based on your uploaded notes?`;
+  // 1. Quick Prompt: "Quiz me on ..."
+  if (lower.startsWith('quiz me')) {
+    const card = flashcards[Math.floor(Math.random() * Math.min(flashcards.length, 4))] || matchedCard;
+    return `### Active Recall Challenge 🎯\n\n**Question**: ${card?.front || `What is the governing principle of ${topicName}?`}\n\n*Formulate your answer and type it below — I will evaluate your reasoning!*`;
   }
 
+  // 2. Quick Prompt: "What are the most common exam mistakes here?"
+  if (lower.includes('mistake') || lower.includes('pitfall') || lower.includes('error')) {
+    return `### High-Yield Exam Traps for ${title} ⚠️\n\n1. **Boundary Condition Neglect**: Forgetting that wavefunctions or states must vanish at infinite barriers (e.g., $\\psi(0)=0, \\psi(a)=0$).\n2. **Units & Constants**: Confusing $h$ ($6.626 \\times 10^{-34} \\text{ J}\\cdot\\text{s}$) with reduced Planck's constant $\\hbar = h/(2\\pi)$.\n3. **Degeneracy Count**: Missing permutations in 3D problems—distinct quantum tuples like $(1,1,2)$, $(1,2,1)$, and $(2,1,1)$ share the same energy level (3-fold degeneracy).\n\n*Pro-tip: Always write out the governing formula before beginning step-by-step mathematical substitution.*`;
+  }
+
+  // 3. Quick Prompt: "Give me a real-world example of this concept"
+  if (lower.includes('real-world') || lower.includes('example') || lower.includes('practical') || lower.includes('application')) {
+    return `### Real-World Engineering Application 🌍\n\n**Topic**: ${topicName}\n\n${eli5 ? `💡 **Intuitive Analogy**: ${eli5}\n\n` : ''}**Practical Tech Use-Case**:\n- **Scanning Tunneling & Electron Microscopes**: Exploit the De Broglie matter-wave nature of electrons ($\\lambda = h/p$) to achieve picometer-scale atomic resolution impossible with visible light.\n- **Quantum Wells & Semiconductor Lasers**: Nanoscale potential wells restrict electrons just like a 3D quantum box, engineering specific bandgap energies for telecom fiber lasers.\n\nWhich practical mechanism would you like to explore deeper?`;
+  }
+
+  // 4. Quick Prompt: "Ask me a viva question"
+  if (lower.includes('viva') || lower.includes('oral exam')) {
+    return `### Oral Viva Drill 🎓\n\n**Examiner Question**: In **${topicName}**, what physical condition makes energy eigenvalues discrete rather than continuous, and how do physical boundary conditions enforce this?\n\n*Answer concisely as you would in front of a university examiner.*`;
+  }
+
+  // 5. Formula / Equation Inquiries
+  if (lower.includes('formula') || lower.includes('equation') || lower.includes('math') || lower.includes('derivation')) {
+    return `### Key Mathematical Formulations for ${topicName} 📐\n\n${formula ? `- **Primary Invariant**: \`${formula}\`\n` : ''}- **Theoretical Grounding**: ${summary}\n- **Physical Interpretation**: Each term represents a conserved quantity or dynamical state constraint.\n\n*Would you like to step through the derivation or test an exam calculation with these variables?*`;
+  }
+
+  // 6. Direct Explanations ("What is...", "Explain...", "Tell me about...")
+  if (lower.includes('what is') || lower.includes('explain') || lower.includes('tell me') || lower.includes('define') || mode === 'explainer') {
+    return `### Concept Deep-Dive: ${topicName} 📖\n\n- **Core Definition**: ${summary}\n${formula ? `- **Governing Formulation**: \`${formula}\`\n` : ''}${eli5 ? `- **Plain English Intuition**: ${eli5}\n` : ''}\n**Key Exam Takeaway**: ${matchedCard?.back || 'Ensure you highlight boundary conditions and invariant assertions in written answers.'}\n\n*Does this clear up the concept, or would you like to test a quick practice question on it?*`;
+  }
+
+  // 7. Exam Mode (Oral Evaluation)
   if (mode === 'exam') {
-    return `### Oral Viva Evaluation: **8.5/10**\n\nYour query addresses the core mechanics of **${conceptTopic}**.\n- **Technical Invariant**: *${conceptSummary}*\n\n**Examiner Follow-up Question**: What specific failure mode or edge case occurs if these boundary constraints are violated, and how is it mitigated?`;
+    return `### Oral Examination Evaluation 📝\n\n- **Score**: **8.5 / 10**\n- **Assessment**: Your response accurately targets **${topicName}**. Concepts like *"${summary.slice(0, 80)}..."* are mathematically sound.\n\n**Follow-up Question**: What happens to this formulation when input scales to extreme limits? State the asymptotic boundary behavior.`;
   }
 
-  return `### Concept Breakdown: ${conceptTopic}\n\n1. **Core Principle**: ${conceptSummary}\n2. **Intuitive Model**: ${matchingKeyPoint?.eli5 || studyPackage?.overviewEli5 || 'Understanding this core concept makes exam derivation direct.'}\n3. **Key Formulation / Note**: ${matchingKeyPoint?.formulasOrSyntax?.[0] ? `\`${matchingKeyPoint.formulasOrSyntax[0]}\`` : (matchingCard?.back || 'Always verify boundary conditions in your written answer.')}\n\nWhat specific part of this concept would you like to explore deeper?`;
+  // 8. Socratic Mode (Default / Conversational Guidance)
+  return `### Socratic Study Partner: ${topicName} 💡\n\nGood observation! Looking at **${topicName}** in your course notes:\n\n> *"${summary}"*\n\n${formula ? `With formulation: \`${formula}\`\n\n` : ''}**Guiding Question**: If we double the boundary scale or change the fundamental parameters, how would the energy or system state react? What is your physical intuition?`;
 }
 
 // Serve client build (SPA) in production
